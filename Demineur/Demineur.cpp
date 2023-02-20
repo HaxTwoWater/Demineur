@@ -1,25 +1,25 @@
 #include <stdio.h>
 
+typedef struct Case
+{
+    int content;
+    int reveal;
+}Case;
+
 int main()
 {
-    int array[3][3];
-    int a, b, i;
+    Case array[3][3];
+    int a, b;
+    Case oDefaultCase;
+    oDefaultCase.content = 0;
+    oDefaultCase.reveal = 0;
 
-    i = 0;
     for (a = 0; a < 3; a++)
     {
         for (b = 0; b < 3; b++)
         {
-            array[a][b] = i++;
+            array[a][b] = oDefaultCase;
         }
-    }
-    for (a = 0; a < 3; a++)
-    {
-        for (b = 0; b < 3; b++)
-        {
-            printf("%d ", array[a][b]);
-        }
-        printf("\n");
     }
 
     return(0);
