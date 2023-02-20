@@ -2,7 +2,25 @@
 
 int main()
 {
-    printf("Hello World");
+    int array[3][3];
+    int a, b, i;
 
-    return 0;
+    i = 0;
+    for (a = 0; a < 3; a++)
+    {
+        for (b = 0; b < 3; b++)
+        {
+            array[a][b] = i++;
+        }
+    }
+    for (a = 0; a < 3; a++)
+    {
+        for (b = 0; b < 3; b++)
+        {
+            printf("%d ", array[a][b]);
+        }
+        printf("\n");
+    }
+
+    return(0);
 }
