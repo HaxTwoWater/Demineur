@@ -8,6 +8,11 @@ typedef struct Case
 
 int main()
 {
+    /*
+    int x, y;
+    scanf("%d %d", &x, &y);
+    */
+
     Case array[3][3];
     int a, b;
     Case oDefaultCase;
