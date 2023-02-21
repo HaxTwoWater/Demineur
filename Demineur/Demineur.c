@@ -86,8 +86,8 @@ void app()
         char play = ' ';
         int playX = -1;
         int playY = -1;
-        printf("\nformat:  \"[type = \'f\' for flag or \'n\' for nothing] x/y\"\nQue voulez vous jouer ? : ");
-        while ((playX < 0 || playX > sizeX) || (playY < 0 || playY > sizeY) || (play != 'f' && play != 'n') || (array[playX][playY].reveal == 1 || array[playX][playY].flaged == 1))
+        printf("\nformat:  \"[type = \'f\' for flag or \'r\' for reveal] x/y\"\nWhat do you want to play ? : ");
+        while ((playX < 0 || playX > sizeX) || (playY < 0 || playY > sizeY) || (play != 'f' && play != 'r') || (array[playX][playY].reveal == 1 || array[playX][playY].flaged == 1))
         {
             scanf("%s %d/%d", &play, &playY, &playX);
         }
@@ -95,7 +95,7 @@ void app()
 
         int content = array[playX][playY].content;
 
-        if (play == 'n')
+        if (play == 'r')
         {
             if (content == -1) 
             {

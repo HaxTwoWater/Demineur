@@ -1,8 +1,32 @@
 #include <stdio.h>
-#define numBombs 10
+#include <string.h>
 
 int min(int a, int b) { return (a > b) ? b : a; }
 int max(int a, int b) { return (a < b) ? b : a; }
+int largInt(int a)
+{
+    int larg = 1;
+    while (a >= 10 || a<= -10)
+    {
+        larg++;
+        a /= 10;
+    }
+    return larg;
+}
+char * repeatChar(char * string, int i)
+{
+    char * returnString = "";
+    for (int k = 0; k < strlen(returnString); k++)
+    {
+        returnString[k] = 0;
+    }
+    returnString[0] = 0;
+    for (int j = 0; j < i; j++)
+    {
+        returnString = strcat(returnString, string);
+    }
+    return returnString;
+}
 
 #include <stdlib.h>
 
@@ -25,28 +49,49 @@ typedef struct ListCase
 
 
 //Util
-ListCase Create(int sizeX, int sizeY);
+ListCase Create(int sizeX, int sizeY, int difficulty);
 void AddCase(ListCase *list, Case val);
 void ClearList(ListCase *list);
 Case* GetAtIndex(ListCase* list, int indexX, int indexY);
 void SetAtIndex(ListCase* list, Case *val, int indexX, int indexY);
 
-ListCase Create(int sizeX, int sizeY) 
+ListCase Create(int sizeX, int sizeY, int difficulty) 
 {
-    int a, b;
     int seed = 201;
     ListCase list;
     list.X = sizeX;
     list.Y = sizeY;
+    int numBombs = list.X * list.Y;
+    switch (difficulty)
+    {
+    case 1:
+        numBombs = numBombs * 15 / 72;
+        break;
+    case 2:
+        numBombs = numBombs * 20 / 72;
+        break;
+    case 3:
+        numBombs = numBombs * 25 / 72;
+        break;
+    case 4:
+        numBombs = numBombs * 30 / 72;
+        break;
+    case 5:
+        numBombs = numBombs * 1 / 2;
+        break;
+    default:
+        numBombs = numBombs * 10 / 72;
+        break;
+    }
 
     Case oEmptyCase;
     oEmptyCase.content = 0;
-    oEmptyCase.reveal = 0;
+    oEmptyCase.reveal = 1;
     oEmptyCase.flaged = 0;
 
-    for (a = 0; a < list.X; a++)
+    for (int a = 0; a < list.X; a++)
     {
-        for (b = 0; b < list.Y; b++)
+        for (int b = 0; b < list.Y; b++)
         {
             AddCase(&list, oEmptyCase);
         }
@@ -68,13 +113,18 @@ ListCase Create(int sizeX, int sizeY)
         }
         GetAtIndex(&list, posXBomb, posYBomb)->content = -1;
 
-        for (a = max(0, posXBomb - 1); a <= min(list.X, posXBomb + 1); a++)
+        int startX = max(0, posXBomb - 1);
+        int endX = min(list.X, posXBomb + 2);
+        int startY = max(0, posYBomb - 1);
+        int endY = min(list.Y, posYBomb + 2);
+
+        for (int a = startX; a < endX; a++)
         {
-            for (b = max(0, posYBomb - 1); b <= min(list.Y, posYBomb + 1); b++)
+            for (int b = startY; b < endY; b++)
             {
                 if (GetAtIndex(&list, a, b)->content != -1)
                 {
-                    GetAtIndex(&list, a, b)->content++;
+                    GetAtIndex(&list, a, b)->content += 1;
                 }
             }
         }
@@ -130,12 +180,23 @@ void endGame(int condition, int* finish, ListCase* list);
 
 void app()
 {
-    int x;
-    int y;
+    int x = -1;
+    int y = -1;
+    int difficulty = -1;
     printf("Choose a size with the format x/y : ");
-    scanf("%d/%d", &x, &y);
+    while (x < 0 || y < 0)
+    {
+        scanf("%d/%d", &x, &y);
+    }
+    //system("cls");
+    printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
+    while (difficulty < 0 || difficulty > 5)
+    {
+        scanf("%d", &difficulty);
+    }
+    //system("cls");
 
-    ListCase list = Create(x, y);
+    ListCase list = Create(x, y, difficulty);
 
     int finish = 1;
     while (finish)
@@ -145,16 +206,16 @@ void app()
         char play = ' ';
         int playX = -1;
         int playY = -1;
-        printf("\nformat:  \"[type = \'f\' for flag or \'n\' for nothing] x/y\"\nQue voulez vous jouer ? : ");
-        while ((playX < 0 || playX > list.X) || (playY < 0 || playY > list.Y) || (play != 'f' && play != 'n') || (GetAtIndex(&list, playX, playY)->reveal == 1))
+        printf("\nformat:  \"[type = \'f\' for flag or \'r\' for reveal] x/y\"\nWhat do you want to play ? : ");
+        while ((playX < 0 || playX > list.X) || (playY < 0 || playY > list.Y) || (play != 'f' && play != 'r') || (GetAtIndex(&list, playX, playY)->reveal == 1))
         {
             scanf("%s %d/%d", &play, &playY, &playX);
         }
-        system("cls");
+        //system("cls");
 
         int content = GetAtIndex(&list, playX, playY)->content;
 
-        if (play == 'n')
+        if (play == 'r')
         {
             if (content == -1)
             {
@@ -229,14 +290,26 @@ void endGame(int condition, int* finish, ListCase* list)
         *finish = 0;
         break;
     case 1:
-        int x;
-        int y;
+        int x = -1;
+        int y = -1;
+        int difficulty = -1;
         printf("Choose a size with the format x/y : ");
-        scanf("%d/%d", &x, &y);
-        *list = Create(x, y);
+        while (x < 0 || y < 0)
+        {
+            scanf("%d/%d", &x, &y);
+        }
+        //system("cls");
+        printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
+        while (difficulty < 0 || difficulty > 5)
+        {
+            scanf("%d", &difficulty);
+        }
+        //system("cls");
+
+        *list = Create(x, y, difficulty);
         break;
     }
-    system("cls");
+    //system("cls");
 }
 
 void revealCase(ListCase *list, int posX, int posY)
@@ -252,7 +325,7 @@ void revealCase(ListCase *list, int posX, int posY)
         {
             for (int b = startY; b < endY; b++)
             {
-                if (GetAtIndex(list, posX, posY)->reveal == 0)
+                if (GetAtIndex(list, a, b)->reveal == 0)
                 {
                     revealCase(list, a, b);
                 }
@@ -263,40 +336,41 @@ void revealCase(ListCase *list, int posX, int posY)
 
 void printTable(ListCase *list)
 {
-    printf("\n   ");
+    int larg = largInt(list->X);
+    printf("\n  %s", repeatChar(" ", larg));
     for (int i = 0; i < list->Y; i++)
     {
-        printf("%d ", i);
+        printf("%d %s", i, repeatChar(" ", larg - largInt(i)));
     }
     printf("\n\n");
     for (int a = 0; a < list->X; a++)
     {
-        printf("%d  ", a);
+        printf("%s%d  ", repeatChar(" ", larg - largInt(a)), a);
         for (int b = 0; b < list->Y; b++)
         {
             if (GetAtIndex(list, a, b)->flaged == 1)
             {
-                printf("F ");
+                printf("F%s", repeatChar(" ", larg));
             }
             else if (GetAtIndex(list, a, b)->reveal == 0)
             {
-                printf("? ");
+                printf("?%s", repeatChar(" ", larg));
             }
             else if (GetAtIndex(list, a, b)->content == -1)
             {
-                printf("* ");
+                printf("*%s", repeatChar(" ", larg));
             }
             else
             {
-                printf("%d ", GetAtIndex(list, a, b)->content);
+                printf("%d%s", GetAtIndex(list, a, b)->content, repeatChar(" ", larg));
             }
         }
-        printf("  %d\n", a);
+        printf(" %s%d\n", repeatChar(" ", larg - largInt(a)), a);
     }
-    printf("\n   ");
+    printf("\n  %s", repeatChar(" ", larg));
     for (int i = 0; i < list->Y; i++)
     {
-        printf("%d ", i);
+        printf("%d %s", i, repeatChar(" ", larg - largInt(i)));
     }
     printf("\n\n");
 }
@@ -305,7 +379,7 @@ int main()
 {
     app();
 
-        printf("\n\nProgram ended, press any button to exit the code...");
+    printf("\n\nProgram ended, press any button to exit the code...");
     getch();
     return(0);
 }
