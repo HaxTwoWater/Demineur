@@ -13,7 +13,8 @@ typedef struct Case
     int flaged;
 }Case;
 
-void revealCase(Case array[][sizeX][sizeY], int posX, int posY, int firstGen);
+void revealCase(Case array[sizeX][sizeY], int posX, int posY);
+void printTable(Case array[sizeX][sizeY]);
 
 void app()
 {
@@ -22,7 +23,7 @@ void app()
 
     Case array[sizeX][sizeY];
     int a, b;
-    int seed = 199;
+    int seed = 201;
     Case oEmptyCase;
     oEmptyCase.content = 0;
     oEmptyCase.reveal = 0;
@@ -70,31 +71,7 @@ void app()
 
     while (1)
     {
-        printf("\n");
-        for (a = 0; a < sizeX; a++)
-        {
-            for (b = 0; b < sizeY; b++)
-            {
-                if (array[a][b].flaged == 1)
-                {
-                    printf("F ");
-                }
-                else
-                    if (array[a][b].reveal == 0)
-                    {
-                        printf("? ");
-                    }
-                    else if (array[a][b].content == -1)
-                    {
-                        printf("* ");
-                    }
-                    else
-                    {
-                        printf("%d ", array[a][b].content);
-                    }
-            }
-            printf("\n");
-        }
+        printTable(array);
 
         char play = ' ';
         int playX = -1;
@@ -108,7 +85,7 @@ void app()
 
         if (play == 'n')
         {
-            revealCase(&array, playX, playY, 1);
+            revealCase(array, playX, playY);
         }
         else
         {
@@ -117,26 +94,71 @@ void app()
     }
 }
 
-void revealCase(Case array[][sizeX][sizeY], int posX, int posY, int firstGen)
+void revealCase(Case array[sizeX][sizeY], int posX, int posY)
 {
-    (*array)[posX][posY].reveal = 1;
-    if ((*array)[posX][posY].content == 0 || firstGen == 1) {
-        for (int a = max(0, posX - 1); a <= min(sizeX, posX + 1); a++)
+    int startX = max(0, posX - 1);
+    int endX = min(sizeX, posX +2);
+    int startY = max(0, posY - 1);
+    int endY = min(sizeY, posY +2);
+
+    array[posX][posY].reveal = 1;
+    if (array[posX][posY].content == 0) {
+        for (int a = startX; a < endX; a++)
         {
-            for (int b = max(0, posY - 1); b <= min(sizeY, posY + 1); b++)
+            for (int b = startY; b < endY; b++)
             {
-                if ((*array)[a][b].reveal == 0)
+                if (array[a][b].reveal == 0)
                 {
-                    revealCase(array, a, b, 0);
+                    revealCase(array, a, b);
                 }
             }
         }
     }
 }
 
+void printTable(Case array[sizeX][sizeY])
+{
+    printf("\n   ");
+    for (int i = 0; i < sizeY; i++)
+    {
+        printf("%d ", i);
+    }
+    printf("\n\n");
+    for (int a = 0; a < sizeX; a++)
+    {
+        printf("%d  ", a);
+        for (int b = 0; b < sizeY; b++)
+        {
+            if (array[a][b].flaged == 1)
+            {
+                printf("F ");
+            }
+            else if (array[a][b].reveal == 0)
+            {
+                printf("? ");
+            }
+            else if (array[a][b].content == -1)
+            {
+                printf("* ");
+            }
+            else
+            {
+                printf("%d ", array[a][b].content);
+            }
+        }
+        printf("  %d\n", a);
+    }
+    printf("\n   ");
+    for (int i = 0; i < sizeY; i++)
+    {
+        printf("%d ", i);
+    }
+    printf("\n\n");
+}
+
 int main()
 {
-    app()
+    app();
 
         printf("\n\nProgram ended, press any button to exit the code...");
     getch();
