@@ -1,7 +1,8 @@
 ﻿#include <stdio.h>
-#define sizeX 7
-#define sizeY 8
-#define numBombs 10
+#include <stdlib.h>
+#define sizeX 10
+#define sizeY 10
+#define numBombs 15
 
 int min(int a, int b) { return (a > b) ? b : a; }
 int max(int a, int b) { return (a < b) ? b : a; }
@@ -25,7 +26,7 @@ void app()
 
     Case array[sizeX][sizeY];
     int a, b;
-    int seed = 201;
+    int seed = 1313;
     Case oEmptyCase;
     oEmptyCase.content = 0;
     oEmptyCase.reveal = 0;
@@ -83,7 +84,7 @@ void app()
         {
             scanf("%s %d/%d", &play, &playY, &playX);
         }
-        printf("\n====================\n");
+        system("cls");
 
         int content = array[playX][playY].content;
 
@@ -161,7 +162,7 @@ void endGame(int condition, int * finish, Case array[sizeX][sizeY])
         app();
         break;
     }
-    printf("\n====================\n");
+    system("cls");
 }
 
 void revealCase(Case array[sizeX][sizeY], int posX, int posY)
