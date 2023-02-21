@@ -149,7 +149,7 @@ void endGame(int condition, int * finish, Case array[sizeX][sizeY])
     }
     printTable(array);
 
-    int ask;
+    int ask = -1;
     switch (condition)
     {
     case 0:
@@ -158,15 +158,18 @@ void endGame(int condition, int * finish, Case array[sizeX][sizeY])
     case 1:
         printf("Well played ! You Won ! \n Type 1 to play again and 0 to exit : ");
         break;
-    } 
-    scanf("%d", &ask);
+    }
+    while (ask != 0 && ask != 1)
+    {
+        scanf("%d", &ask);
+    }
+    printf("%d\n\n", ask);
     switch (ask)
     {
     case 0:
         *finish = 0;
         break;
     case 1:
-        app();
         break;
     }
     system("cls");
