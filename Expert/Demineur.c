@@ -57,14 +57,31 @@ typedef struct ListCase
 } ListCase;
 
 //Util
-ListCase Create(int sizeX, int sizeY, int difficulty);
+ListCase Create();
 void AddCase(ListCase *list, Case val);
 void ClearList(ListCase *list);
 Case* GetAtIndex(ListCase* list, int indexX, int indexY);
 void SetAtIndex(ListCase* list, Case *val, int indexX, int indexY);
 
-ListCase Create(int sizeX, int sizeY, int difficulty) 
+ListCase Create() 
 {
+    int sizeX = -1;
+    int sizeY = -1;
+    int difficulty = -1;
+    system("cls");
+    printf("Choose a size with the format x/y : ");
+    while (sizeX < 0 || sizeY < 0)
+    {
+        scanf("%d/%d", &sizeX, &sizeY);
+    }
+    system("cls");
+    printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
+    while (difficulty < 0 || difficulty > 5)
+    {
+        scanf("%d", &difficulty);
+    }
+    system("cls");
+
     int seed = 201;
     ListCase list;
     list.X = sizeX;
@@ -145,7 +162,7 @@ ListCase Create(int sizeX, int sizeY, int difficulty)
 
 void ClearList(ListCase* list)
 {
-    while (list->first != NULL) 
+    while (list->first != NULL)
     {
         Case* actual = list->first;
         list->first = list->first->next;
@@ -190,23 +207,7 @@ void endGame(int condition, int* finish, ListCase* list);
 
 void app()
 {
-    int x = -1;
-    int y = -1;
-    int difficulty = -1;
-    printf("Choose a size with the format x/y : ");
-    while (x < 0 || y < 0)
-    {
-        scanf("%d/%d", &x, &y);
-    }
-    system("cls");
-    printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
-    while (difficulty < 0 || difficulty > 5)
-    {
-        scanf("%d", &difficulty);
-    }
-    system("cls");
-
-    ListCase list = Create(x, y, difficulty);
+    ListCase list = Create();
 
     int finish = 1;
     while (finish)
@@ -320,45 +321,29 @@ void endGame(int condition, int* finish, ListCase* list)
         GetAtIndex(list, j, 0)->reveal = 1;
     }
     printTable(list);
-    ClearList(list);
+    //ClearList(list);
 
-    int ask = -1;
+    char ask = -1;
     switch (condition)
     {
     case 0:
-        printf("You losed ! Try Again ! \n Type 1 to play again and 0 to exit : ");
+        printf("You losed ! Try Again ! \nDo you want to start a new game ? (y/n) > ");
         break;
     case 1:
-        printf("Well played ! You Won ! \n Type 1 to play again and 0 to exit : ");
+        printf("Well played ! You Won ! \nDo you want to start a new game ? (y/n) > ");
         break;
     }
-    while (ask != 0 && ask != 1)
+    while (ask != 'y' && ask != 'n')
     {
-        scanf("%d", &ask);
+        scanf("%s", &ask);
     }
     switch (ask)
     {
-    case 0:
+    case 'n':
         *finish = 0;
         break;
-    case 1:
-        int x = -1;
-        int y = -1;
-        int difficulty = -1;
-        printf("Choose a size with the format x/y : ");
-        while (x < 0 || y < 0)
-        {
-            scanf("%d/%d", &x, &y);
-        }
-        system("cls");
-        printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
-        while (difficulty < 0 || difficulty > 5)
-        {
-            scanf("%d", &difficulty);
-        }
-        system("cls");
-
-        *list = Create(x, y, difficulty);
+    case 'y':
+        *list = Create();
         break;
     }
     system("cls");
@@ -389,7 +374,7 @@ void revealCase(ListCase *list, int posX, int posY)
 void printTable(ListCase *list)
 {
     int larg = largInt(list->X+1);
-    printf("\n  %s", repeatChar(" ", larg));
+    printf("  %s", repeatChar(" ", larg));
     for (int i = 0; i < list->Y; i++)
     {
         if (i == list->selectY)
