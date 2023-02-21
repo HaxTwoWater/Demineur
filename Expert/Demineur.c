@@ -3,6 +3,10 @@
 
 int min(int a, int b) { return (a > b) ? b : a; }
 int max(int a, int b) { return (a < b) ? b : a; }
+
+#include <stdlib.h>
+#include <windows.h>
+
 int largInt(int a)
 {
     int larg = 1;
@@ -27,8 +31,11 @@ char * repeatChar(char * string, int i)
     }
     return returnString;
 }
-
-#include <stdlib.h>
+void Color(int couleurDuTexte, int couleurDeFond)
+{
+    HANDLE H = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(H, couleurDeFond * 16 + couleurDuTexte);
+}
 
 typedef struct Case Case;
 struct Case
@@ -46,7 +53,6 @@ typedef struct ListCase
     int X;
     int Y;
 } ListCase;
-
 
 //Util
 ListCase Create(int sizeX, int sizeY, int difficulty);
@@ -350,6 +356,7 @@ void printTable(ListCase *list)
         {
             if (GetAtIndex(list, a, b)->flaged == 1)
             {
+                Color(10, 0);
                 printf("F%s", repeatChar(" ", larg));
             }
             else if (GetAtIndex(list, a, b)->reveal == 0)
@@ -358,12 +365,19 @@ void printTable(ListCase *list)
             }
             else if (GetAtIndex(list, a, b)->content == -1)
             {
+                Color(4, 0);
                 printf("*%s", repeatChar(" ", larg));
             }
             else
             {
+                Color(9, 0);
+                if (GetAtIndex(list, a, b)->content == 0)
+                {
+                    Color(8, 0);
+                }
                 printf("%d%s", GetAtIndex(list, a, b)->content, repeatChar(" ", larg));
             }
+            Color(15, 0);
         }
         printf(" %s%d\n", repeatChar(" ", larg - largInt(a)), a);
     }
