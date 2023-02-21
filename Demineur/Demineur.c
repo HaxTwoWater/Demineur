@@ -1,11 +1,18 @@
 ﻿#include <stdio.h>
-#include <stdlib.h>
 #define sizeX 10
 #define sizeY 10
 #define numBombs 15
 
-int min(int a, int b) { return (a > b) ? b : a; }
-int max(int a, int b) { return (a < b) ? b : a; }
+int min(int a, int b)
+{
+    return (a > b) ? b : a;
+}
+int max(int a, int b)
+{
+    return (a < b) ? b : a;
+}
+
+#include <stdlib.h>
 
 typedef struct Case
 {
