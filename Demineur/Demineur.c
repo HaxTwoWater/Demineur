@@ -15,7 +15,7 @@ typedef struct Case
 
 void revealCase(Case array[][sizeX][sizeY], int posX, int posY, int firstGen);
 
-int main()
+void app()
 {
     /*printf("Choose a size with the format x/y :");
     scanf("%d/%d", &x, &y);*/
@@ -24,12 +24,12 @@ int main()
     int a, b;
     int seed = 199;
     Case oEmptyCase;
-        oEmptyCase.content = 0;
-        oEmptyCase.reveal = 0;
-        oEmptyCase.flaged = 0;
+    oEmptyCase.content = 0;
+    oEmptyCase.reveal = 0;
+    oEmptyCase.flaged = 0;
     Case oBombCase;
-        oBombCase = oEmptyCase;
-        oBombCase.content = -1;
+    oBombCase = oEmptyCase;
+    oBombCase.content = -1;
 
     for (a = 0; a < sizeX; a++)
     {
@@ -49,7 +49,7 @@ int main()
         tryPos = 1;
         while (value == -1)
         {
-            posXBomb = (((seed * 320 + i) * tryPos / 5 * (i * 330 + seed + tryPos) * 2000000 * seed) % sizeX + sizeX) %sizeX;
+            posXBomb = (((seed * 320 + i) * tryPos / 5 * (i * 330 + seed + tryPos) * 2000000 * seed) % sizeX + sizeX) % sizeX;
             posYBomb = (((i * 290 + seed) * tryPos / 3 * (seed * 300 + i + tryPos) * 2000002 * seed) % sizeY + sizeY) % sizeY;
             value = array[posXBomb][posYBomb].content;
             tryPos++;
@@ -79,19 +79,19 @@ int main()
                 {
                     printf("F ");
                 }
-                else 
-                if (array[a][b].reveal == 0)
-                {
-                    printf("? ");
-                }
-                else if(array[a][b].content == -1)
-                {
-                    printf("* ");
-                }
                 else
-                {
-                    printf("%d ", array[a][b].content);
-                }
+                    if (array[a][b].reveal == 0)
+                    {
+                        printf("? ");
+                    }
+                    else if (array[a][b].content == -1)
+                    {
+                        printf("* ");
+                    }
+                    else
+                    {
+                        printf("%d ", array[a][b].content);
+                    }
             }
             printf("\n");
         }
@@ -115,11 +115,6 @@ int main()
             array[playX][playY].flaged = 1;
         }
     }
-
-
-    printf("\n\nProgram ended, press any button to exit the code...");
-    getch();
-    return(0);
 }
 
 void revealCase(Case array[][sizeX][sizeY], int posX, int posY, int firstGen)
@@ -137,4 +132,13 @@ void revealCase(Case array[][sizeX][sizeY], int posX, int posY, int firstGen)
             }
         }
     }
+}
+
+int main()
+{
+    app()
+
+        printf("\n\nProgram ended, press any button to exit the code...");
+    getch();
+    return(0);
 }
