@@ -188,13 +188,13 @@ void app()
     {
         scanf("%d/%d", &x, &y);
     }
-    //system("cls");
+    system("cls");
     printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
     while (difficulty < 0 || difficulty > 5)
     {
         scanf("%d", &difficulty);
     }
-    //system("cls");
+    system("cls");
 
     ListCase list = Create(x, y, difficulty);
 
@@ -211,7 +211,7 @@ void app()
         {
             scanf("%s %d/%d", &play, &playY, &playX);
         }
-        //system("cls");
+        system("cls");
 
         int content = GetAtIndex(&list, playX, playY)->content;
 
@@ -298,18 +298,18 @@ void endGame(int condition, int* finish, ListCase* list)
         {
             scanf("%d/%d", &x, &y);
         }
-        //system("cls");
+        system("cls");
         printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
         while (difficulty < 0 || difficulty > 5)
         {
             scanf("%d", &difficulty);
         }
-        //system("cls");
+        system("cls");
 
         *list = Create(x, y, difficulty);
         break;
     }
-    //system("cls");
+    system("cls");
 }
 
 void revealCase(ListCase *list, int posX, int posY)
