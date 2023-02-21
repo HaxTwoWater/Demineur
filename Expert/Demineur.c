@@ -52,6 +52,8 @@ typedef struct ListCase
     Case* first;
     int X;
     int Y;
+    int selectX;
+    int selectY;
 } ListCase;
 
 //Util
@@ -67,6 +69,8 @@ ListCase Create(int sizeX, int sizeY, int difficulty)
     ListCase list;
     list.X = sizeX;
     list.Y = sizeY;
+    list.selectX = sizeX / 2;
+    list.selectY = sizeY / 2;
     int numBombs = list.X * list.Y;
     switch (difficulty)
     {
@@ -210,16 +214,57 @@ void app()
         printTable(&list);
 
         char play = ' ';
-        int playX = -1;
-        int playY = -1;
-        printf("\nformat:  \"[type = \'f\' for flag or \'r\' for reveal] x/y\"\nWhat do you want to play ? : ");
-        while ((playX < 0 || playX > list.X) || (playY < 0 || playY > list.Y) || (play != 'f' && play != 'r') || (GetAtIndex(&list, playX, playY)->reveal == 1))
+        int exitWhile = 1;
+        while (exitWhile)
         {
-            scanf("%s %d/%d", &play, &playY, &playX);
+            Case selectedCase;
+            switch (getch())
+            {
+            case 122:
+                exitWhile = 0;
+                // code for arrow up
+                list.selectX = max(list.selectX - 1, 0);
+                break;
+            case 115:
+                exitWhile = 0;
+                // code for arrow down
+                list.selectX = min(list.selectX + 1, list.X - 1);
+                break;
+            case 100:
+                exitWhile = 0;
+                // code for arrow right
+                list.selectY = min(list.selectY + 1, list.Y - 1);
+                break;
+            case 113:
+                exitWhile = 0;
+                // code for arrow left
+                list.selectY = max(list.selectY - 1, 0);
+                break;
+
+            case 102:
+                exitWhile = 0;
+                // code for flag (key F)
+                selectedCase = *GetAtIndex(&list, list.selectX, list.selectY);
+                if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
+                {
+                    exitWhile = 0;
+                    play = 'f';
+                }
+                break;
+            case 32:
+                // code for reveal (key spacebar)
+                selectedCase = *GetAtIndex(&list, list.selectX, list.selectY);
+                if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
+                {
+                    exitWhile = 0;
+                    play = 'r';
+                }
+                break;
+            }
         }
         system("cls");
 
-        int content = GetAtIndex(&list, playX, playY)->content;
+        int content = GetAtIndex(&list, list.selectX, list.selectY)->content;
 
         if (play == 'r')
         {
@@ -229,21 +274,22 @@ void app()
             }
             else
             {
-                revealCase(&list, playX, playY);
+                revealCase(&list, list.selectX, list.selectY);
+                checkEndGame(&finish, &list);
             }
         }
-        else
+        else if (play == 'f')
         {
             if (content == -1)
             {
-                GetAtIndex(&list, playX, playY)->flaged = 1;
+                GetAtIndex(&list, list.selectX, list.selectY)->flaged = 1;
+                checkEndGame(&finish, &list);
             }
             else
             {
                 endGame(0, &finish, &list);
             }
         }
-        checkEndGame(&finish, &list);
     }
 }
 
@@ -342,49 +388,77 @@ void revealCase(ListCase *list, int posX, int posY)
 
 void printTable(ListCase *list)
 {
-    int larg = largInt(list->X);
+    int larg = largInt(list->X+1);
     printf("\n  %s", repeatChar(" ", larg));
     for (int i = 0; i < list->Y; i++)
     {
-        printf("%d %s", i, repeatChar(" ", larg - largInt(i)));
+        if (i == list->selectY)
+        {
+            Color(1, 0);
+        }
+        printf("%d %s", i+1, repeatChar(" ", larg - largInt(i)));
+        Color(15, 0);
     }
     printf("\n\n");
     for (int a = 0; a < list->X; a++)
     {
-        printf("%s%d  ", repeatChar(" ", larg - largInt(a)), a);
+        if (a == list->selectX)
+        {
+            Color(1, 0);
+        }
+        printf("%s%d  ", repeatChar(" ", larg - largInt(a+1)), a+1);
+        Color(15, 0);
         for (int b = 0; b < list->Y; b++)
         {
+            int background = 0;
+            if (list->selectX == a && list->selectY == b)
+            {
+                background = 1;
+            }
             if (GetAtIndex(list, a, b)->flaged == 1)
             {
-                Color(10, 0);
-                printf("F%s", repeatChar(" ", larg));
+                Color(10, background);
+                printf("F");
             }
             else if (GetAtIndex(list, a, b)->reveal == 0)
             {
-                printf("?%s", repeatChar(" ", larg));
+                Color(15, background);
+                printf("?");
             }
             else if (GetAtIndex(list, a, b)->content == -1)
             {
-                Color(4, 0);
-                printf("*%s", repeatChar(" ", larg));
+                Color(4, background);
+                printf("*");
             }
             else
             {
-                Color(9, 0);
+                Color(13, background);
                 if (GetAtIndex(list, a, b)->content == 0)
                 {
-                    Color(8, 0);
+                    Color(8, background);
                 }
-                printf("%d%s", GetAtIndex(list, a, b)->content, repeatChar(" ", larg));
+                printf("%d", GetAtIndex(list, a, b)->content);
             }
+            printf("%s", repeatChar(" ", larg - 1));
             Color(15, 0);
+            printf(" ");
         }
-        printf(" %s%d\n", repeatChar(" ", larg - largInt(a)), a);
+        if (a == list->selectX)
+        {
+            Color(1, 0);
+        }
+        printf(" %d\n", a+1);
+        Color(15, 0);
     }
     printf("\n  %s", repeatChar(" ", larg));
     for (int i = 0; i < list->Y; i++)
     {
-        printf("%d %s", i, repeatChar(" ", larg - largInt(i)));
+        if (i == list->selectY)
+        {
+            Color(1, 0);
+        }
+        printf("%d %s", i+1, repeatChar(" ", larg - largInt(i)));
+        Color(15, 0);
     }
     printf("\n\n");
 }
