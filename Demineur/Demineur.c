@@ -163,7 +163,6 @@ void endGame(int condition, int * finish, Case array[sizeX][sizeY])
     {
         scanf("%d", &ask);
     }
-    printf("%d\n\n", ask);
     switch (ask)
     {
     case 0:
