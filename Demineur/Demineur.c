@@ -15,7 +15,7 @@ typedef struct Case
 
 void revealCase(Case array[sizeX][sizeY], int posX, int posY);
 void printTable(Case array[sizeX][sizeY]);
-int checkEndGame(Case array[sizeX][sizeY]);
+void checkEndGame(int* finish, Case array[sizeX][sizeY]);
 void endGame(int condition, int* finish, Case array[sizeX][sizeY]);
 
 void app()
@@ -109,36 +109,38 @@ void app()
                 endGame(0, &finish, array);
             }
         }
-        if (checkEndGame(array) == 1) 
-        {
-            endGame(1, &finish, array);
-        }
+        checkEndGame(&finish, array);
     }
 }
 
-int checkEndGame(Case array[sizeX][sizeY]) 
+void checkEndGame(int* finish, Case array[sizeX][sizeY])
 {
+    int ending = 1;
     for (int i = 0; i < sizeX * sizeY; i++) 
     {
         if (array[0][i].content == -1 && array[0][i].flaged == 0)
         {
-            return 0;
+            ending = 0;
         }
-        if (array[0][i].content == 0 && array[0][i].reveal == 0) 
+        else if (array[0][i].content == 0 && array[0][i].reveal == 0) 
         {
-            return 0;
+            ending = 0;
         }
     }
-    for (int j = 0; j < sizeX * sizeY; j++) 
+    if (ending == 1)
     {
-        array[0][j].reveal = 1;
+        endGame(1, finish, array);
     }
-    return 1;
 }
 
 void endGame(int condition, int * finish, Case array[sizeX][sizeY])
 {
+    for (int j = 0; j < sizeX * sizeY; j++)
+    {
+        array[0][j].reveal = 1;
+    }
     printTable(array);
+
     int ask;
     switch (condition)
     {
@@ -159,6 +161,7 @@ void endGame(int condition, int * finish, Case array[sizeX][sizeY])
         app();
         break;
     }
+    printf("\n====================\n");
 }
 
 void revealCase(Case array[sizeX][sizeY], int posX, int posY)
