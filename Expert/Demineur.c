@@ -4,6 +4,8 @@
 int min(int a, int b) { return (a > b) ? b : a; }
 int max(int a, int b) { return (a < b) ? b : a; }
 
+#include <stdlib.h>
+
 typedef struct Case Case;
 struct Case
 {
@@ -123,17 +125,20 @@ Case* GetAtIndex(ListCase *list, int indexX, int indexY)
 //Game
 void revealCase(ListCase *list, int posX, int posY);
 void printTable(ListCase *list);
+void checkEndGame(int* finish, ListCase* list);
+void endGame(int condition, int* finish, ListCase* list);
 
 void app()
 {
     int x;
     int y;
-    printf("Choose a size with the format x/y :");
+    printf("Choose a size with the format x/y : ");
     scanf("%d/%d", &x, &y);
 
     ListCase list = Create(x, y);
 
-    while (1)
+    int finish = 1;
+    while (finish)
     {
         printTable(&list);
 
@@ -145,18 +150,93 @@ void app()
         {
             scanf("%s %d/%d", &play, &playY, &playX);
         }
-        printf("\n====================\n");
+        system("cls");
+
+        int content = GetAtIndex(&list, playX, playY)->content;
 
         if (play == 'n')
         {
-            revealCase(&list, playX, playY);
+            if (content == -1)
+            {
+                endGame(0, &finish, &list);
+            }
+            else
+            {
+                revealCase(&list, playX, playY);
+            }
         }
         else
         {
-            GetAtIndex(&list, playX, playY)->flaged = 1;
+            if (content == -1)
+            {
+                GetAtIndex(&list, playX, playY)->flaged = 1;
+            }
+            else
+            {
+                endGame(0, &finish, &list);
+            }
+        }
+        checkEndGame(&finish, &list);
+    }
+}
+
+void checkEndGame(int* finish, ListCase* list)
+{
+    int ending = 1;
+    for (int i = 0; i < list->X * list->Y; i++)
+    {
+        if (GetAtIndex(list, i, 0)->content == -1 && GetAtIndex(list, i, 0)->flaged == 0)
+        {
+            ending = 0;
+        }
+        else if (GetAtIndex(list, i, 0)->content == 0 && GetAtIndex(list, i, 0)->reveal == 0)
+        {
+            ending = 0;
         }
     }
-    ClearList(&list);
+    if (ending == 1)
+    {
+        endGame(1, finish, list);
+    }
+}
+
+void endGame(int condition, int* finish, ListCase* list)
+{
+    for (int j = 0; j < list->X * list->Y; j++)
+    {
+        GetAtIndex(list, j, 0)->reveal = 1;
+    }
+    printTable(list);
+    ClearList(list);
+
+    int ask = -1;
+    switch (condition)
+    {
+    case 0:
+        printf("You losed ! Try Again ! \n Type 1 to play again and 0 to exit : ");
+        break;
+    case 1:
+        printf("Well played ! You Won ! \n Type 1 to play again and 0 to exit : ");
+        break;
+    }
+    while (ask != 0 && ask != 1)
+    {
+        scanf("%d", &ask);
+    }
+    switch (ask)
+    {
+    case 0:
+        *finish = 0;
+        break;
+    case 1:
+        int x;
+        int y;
+        printf("Choose a size with the format x/y : ");
+        scanf("%d/%d", &x, &y);
+        *list = Create(x, y);
+        break;
+    }
+    system("cls");
 }
 
 void revealCase(ListCase *list, int posX, int posY)
