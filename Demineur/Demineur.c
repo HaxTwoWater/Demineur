@@ -15,6 +15,8 @@ typedef struct Case
 
 void revealCase(Case array[sizeX][sizeY], int posX, int posY);
 void printTable(Case array[sizeX][sizeY]);
+int checkEndGame(Case array[sizeX][sizeY]);
+void endGame(int condition, int* finish, Case array[sizeX][sizeY]);
 
 void app()
 {
@@ -68,8 +70,8 @@ void app()
             }
         }
     }
-
-    while (1)
+    int finish = 1;
+    while (finish)
     {
         printTable(array);
 
@@ -83,14 +85,79 @@ void app()
         }
         printf("\n====================\n");
 
+        int content = array[playX][playY].content;
+
         if (play == 'n')
         {
-            revealCase(array, playX, playY);
+            if (content == -1) 
+            {
+                endGame(0, &finish, array);
+            }
+            else 
+            {
+                revealCase(array, playX, playY);
+            }
         }
         else
         {
-            array[playX][playY].flaged = 1;
+            if (content == -1) 
+            {
+                array[playX][playY].flaged = 1;
+            }
+            else 
+            {
+                endGame(0, &finish, array);
+            }
         }
+        if (checkEndGame(array) == 1) 
+        {
+            endGame(1, &finish, array);
+        }
+    }
+}
+
+int checkEndGame(Case array[sizeX][sizeY]) 
+{
+    for (int i = 0; i < sizeX * sizeY; i++) 
+    {
+        if (array[0][i].content == -1 && array[0][i].flaged == 0)
+        {
+            return 0;
+        }
+        if (array[0][i].content == 0 && array[0][i].reveal == 0) 
+        {
+            return 0;
+        }
+    }
+    for (int j = 0; j < sizeX * sizeY; j++) 
+    {
+        array[0][j].reveal = 1;
+    }
+    return 1;
+}
+
+void endGame(int condition, int * finish, Case array[sizeX][sizeY])
+{
+    printTable(array);
+    int ask;
+    switch (condition)
+    {
+    case 0:
+        printf("You losed ! Try Again ! \n Type 1 to play again and 0 to exit : ");
+        break;
+    case 1:
+        printf("Well played ! You Won ! \n Type 1 to play again and 0 to exit : ");
+        break;
+    } 
+    scanf("%d", &ask);
+    switch (ask)
+    {
+    case 0:
+        *finish = 0;
+        break;
+    case 1:
+        app();
+        break;
     }
 }
 
