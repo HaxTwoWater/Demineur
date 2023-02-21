@@ -77,7 +77,7 @@ void app()
         int playX = -1;
         int playY = -1;
         printf("\nformat:  \"[type = \'f\' for flag or \'n\' for nothing] x/y\"\nQue voulez vous jouer ? : ");
-        while ((playX < 0 || playX > sizeX) || (playY < 0 || playY > sizeY) || (play != 'f' && play != 'n') || (array[playX][playY].reveal == 1))
+        while ((playX < 0 || playX > sizeX) || (playY < 0 || playY > sizeY) || (play != 'f' && play != 'n') || (array[playX][playY].reveal == 1 || array[playX][playY].flaged == 1))
         {
             scanf("%s %d/%d", &play, &playY, &playX);
         }
