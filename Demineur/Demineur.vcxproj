@@ -127,7 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Demineur.cpp" />
+    <ClCompile Include="Demineur.c" />
+    <ClCompile Include="DynamicArray.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DynamicArray.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

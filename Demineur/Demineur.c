@@ -1,237 +1,386 @@
 ﻿#include <stdio.h>
-#define sizeX 10
-#define sizeY 10
-#define numBombs 15
+#include <string.h>
+#include <time.h>
+#include <conio.h>
 
-int min(int a, int b)
-{
-    return (a > b) ? b : a;
-}
-int max(int a, int b)
-{
-    return (a < b) ? b : a;
-}
+int min(int a, int b) { return (a > b) ? b : a; }
+int max(int a, int b) { return (a < b) ? b : a; }
 
+#include "DynamicArray.h"
 #include <stdlib.h>
+#include <windows.h>
 
-typedef struct Case
+int largInt(int a)
 {
-    int content;
-    int reveal;
-    int flaged;
-}Case;
+    int larg = 1;
+    while (a >= 10 || a <= -10)
+    {
+        larg++;
+        a /= 10;
+    }
+    return larg;
+}
+char* repeatChar(char* string, int i)
+{
+    char* returnString = "";
+    for (int k = 0; k < strlen(returnString); k++)
+    {
+        returnString[k] = 0;
+    }
+    returnString[0] = 0;
+    for (int j = 0; j < i; j++)
+    {
+        returnString = strcat_s(returnString, strlen(returnString), string);
+    }
+    return returnString;
+}
+void Color(int couleurDuTexte, int couleurDeFond)
+{
+    HANDLE H = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(H, couleurDeFond * 16 + couleurDuTexte);
+}
 
-void revealCase(Case array[sizeX][sizeY], int posX, int posY);
-void printTable(Case array[sizeX][sizeY]);
-void checkEndGame(int* finish, Case array[sizeX][sizeY]);
-void endGame(int condition, int* finish, Case array[sizeX][sizeY]);
+//Game
+void revealCase(DynamicArray* dynamic, int posX, int posY);
+void printTable(DynamicArray* dynamic);
+void checkEndGame(int* finish, DynamicArray* dynamic);
+void endGame(int condition, int* finish, DynamicArray* dynamic);
+DynamicArray* Create();
 
 void app()
 {
-    /*printf("Choose a size with the format x/y :");
-    scanf("%d/%d", &x, &y);*/
+    DynamicArray* dynamic = Create();
 
-    Case array[sizeX][sizeY];
-    int a, b;
-    int seed = 1313;
-    Case oEmptyCase;
-    oEmptyCase.content = 0;
-    oEmptyCase.reveal = 0;
-    oEmptyCase.flaged = 0;
-    Case oBombCase;
-    oBombCase = oEmptyCase;
-    oBombCase.content = -1;
-
-    for (a = 0; a < sizeX; a++)
+    int finish = 1;
+    while (finish)
     {
-        for (b = 0; b < sizeY; b++)
+        printTable(dynamic);
+
+        char play = ' ';
+        int exitWhile = 1;
+        while (exitWhile)
         {
-            array[a][b] = oEmptyCase;
+            Case selectedCase;
+            switch (getch())
+            {
+            case 122:
+                exitWhile = 0;
+                // code for arrow up
+                dynamic->selectX = max(dynamic->selectX - 1, 0);
+                break;
+            case 115:
+                exitWhile = 0;
+                // code for arrow down
+                dynamic->selectX = min(dynamic->selectX + 1, dynamic->sizeX - 1);
+                break;
+            case 100:
+                exitWhile = 0;
+                // code for arrow right
+                dynamic->selectY = min(dynamic->selectY + 1, dynamic->sizeY - 1);
+                break;
+            case 113:
+                exitWhile = 0;
+                // code for arrow left
+                dynamic->selectY = max(dynamic->selectY - 1, 0);
+                break;
+
+            case 102:
+                exitWhile = 0;
+                // code for flag (key F)
+                selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
+                if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
+                {
+                    exitWhile = 0;
+                    play = 'f';
+                }
+                break;
+            case 32:
+                // code for reveal (key spacebar)
+                selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
+                if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
+                {
+                    exitWhile = 0;
+                    play = 'r';
+                }
+                break;
+            }
+        }
+        system("cls");
+
+        int content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
+
+        if (play == 'r')
+        {
+            if (content == -1)
+            {
+                endGame(0, &finish, dynamic);
+            }
+            else
+            {
+                revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+                checkEndGame(&finish, dynamic);
+            }
+        }
+        else if (play == 'f')
+        {
+            if (content == -1)
+            {
+                dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->flaged = 1;
+                checkEndGame(&finish, dynamic);
+            }
+            else
+            {
+                endGame(0, &finish, dynamic);
+            }
         }
     }
+    Free(dynamic);
+}
 
-    int value;
-    int tryPos;
-    int posXBomb;
-    int posYBomb;
+DynamicArray* Create()
+{
+    int sizeX = -1;
+    int sizeY = -1;
+    int difficulty = -1;
+    system("cls");
+    printf("Choose a size with the format x/y : ");
+    while (sizeX < 0 || sizeY < 0)
+    {
+        scanf_s("%d/%d", &sizeX, &sizeY);
+    }
+    system("cls");
+    printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
+    while (difficulty < 0 || difficulty > 5)
+    {
+        scanf_s("%d", &difficulty);
+    }
+    system("cls");
+
+    int seed = 201;
+    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY);
+    printf_s("%d", newDynamic->sizeX);
+
+    int numBombs = newDynamic->sizeX * newDynamic->sizeY;
+    switch (difficulty)
+    {
+    case 1:
+        numBombs = numBombs * 15 / 72;
+        break;
+    case 2:
+        numBombs = numBombs * 20 / 72;
+        break;
+    case 3:
+        numBombs = numBombs * 25 / 72;
+        break;
+    case 4:
+        numBombs = numBombs * 30 / 72;
+        break;
+    case 5:
+        numBombs = numBombs * 1 / 2;
+        break;
+    default:
+        numBombs = numBombs * 10 / 72;
+        break;
+    }
+
+    Case oEmptyCase;
+    oEmptyCase.content = 0;
+    oEmptyCase.reveal = 1;
+    oEmptyCase.flaged = 0;
+
+    for (int a = 0; a < newDynamic->sizeX; a++)
+    {
+        for (int b = 0; b < newDynamic->sizeY; b++)
+        {
+            Add(newDynamic, a, b, &oEmptyCase);
+        }
+    }
+    int value = 0;
+    int tryPos = 0;
+    int posXBomb = -1;
+    int posYBomb = -1;
+    DynamicArray* bomb = newDynamic;
+    srand(time(NULL));
     for (int i = 0; i < numBombs; i++)
     {
-        value = -1;
-        tryPos = 1;
-        while (value == -1)
-        {
-            posXBomb = (((seed * 320 + i) * tryPos / 5 * (i * 330 + seed + tryPos) * 2000000 * seed) % sizeX + sizeX) % sizeX;
-            posYBomb = (((i * 290 + seed) * tryPos / 3 * (seed * 300 + i + tryPos) * 2000002 * seed) % sizeY + sizeY) % sizeY;
-            value = array[posXBomb][posYBomb].content;
-            tryPos++;
-        }
-        array[posXBomb][posYBomb] = oBombCase;
+        int ri = rand() % sizeof(bomb);
+        int r = convertCoordToLen(bomb->elm[ri].X, bomb->elm[ri].Y, newDynamic->sizeX);
+        newDynamic->elm[r].val->content = -1;
+        DeleteAt(bomb, ri);
 
-        for (a = max(0, posXBomb - 1); a <= min(sizeX, posXBomb + 1); a++)
+        int rPos[2];
+        convertLenToCoord(r, newDynamic->sizeX, rPos);
+        int startX = max(0, rPos[0] - 1);
+        int endX = min(newDynamic->sizeX, rPos[0] + 2);
+        int startY = max(0, rPos[1] - 1);
+        int endY = min(newDynamic->sizeY, rPos[1] + 2);
+
+        for (int a = startX; a < endX; a++)
         {
-            for (b = max(0, posYBomb - 1); b <= min(sizeY, posYBomb + 1); b++)
+            for (int b = startY; b < endY; b++)
             {
-                if (array[a][b].content != -1)
+                if (newDynamic->elm[convertCoordToLen(a, b, newDynamic->sizeX)].val->content != -1)
                 {
-                    array[a][b].content++;
+                    newDynamic->elm[convertCoordToLen(a, b, newDynamic->sizeX)].val->content += 1;
                 }
             }
         }
     }
-    int finish = 1;
-    while (finish)
-    {
-        printTable(array);
 
-        char play = ' ';
-        int playX = -1;
-        int playY = -1;
-        printf("\nformat:  \"[type = \'f\' for flag or \'r\' for reveal] x/y\"\nWhat do you want to play ? : ");
-        while ((playX < 0 || playX > sizeX) || (playY < 0 || playY > sizeY) || (play != 'f' && play != 'r') || (array[playX][playY].reveal == 1 || array[playX][playY].flaged == 1))
-        {
-            scanf("%s %d/%d", &play, &playY, &playX);
-        }
-        system("cls");
+    Free(bomb);
 
-        int content = array[playX][playY].content;
-
-        if (play == 'r')
-        {
-            if (content == -1) 
-            {
-                endGame(0, &finish, array);
-            }
-            else 
-            {
-                revealCase(array, playX, playY);
-            }
-        }
-        else
-        {
-            if (content == -1) 
-            {
-                array[playX][playY].flaged = 1;
-            }
-            else 
-            {
-                endGame(0, &finish, array);
-            }
-        }
-        checkEndGame(&finish, array);
-    }
+    return newDynamic;
 }
 
-void checkEndGame(int* finish, Case array[sizeX][sizeY])
+void checkEndGame(int* finish, DynamicArray* dynamic)
 {
     int ending = 1;
-    for (int i = 0; i < sizeX * sizeY; i++) 
+    for (int i = 0; i < dynamic->sizeX * dynamic->sizeY; i++)
     {
-        if (array[0][i].content == -1 && array[0][i].flaged == 0)
+        if (dynamic->elm[convertCoordToLen(i, 0, dynamic->sizeX)].val->content == -1 && dynamic->elm[convertCoordToLen(i, 0, dynamic->sizeX)].val->flaged == 0)
         {
             ending = 0;
         }
-        else if (array[0][i].content == 0 && array[0][i].reveal == 0) 
+        else if (dynamic->elm[convertCoordToLen(i, 0, dynamic->sizeX)].val->content == 0 && dynamic->elm[convertCoordToLen(i, 0, dynamic->sizeX)].val->reveal == 0)
         {
             ending = 0;
         }
     }
     if (ending == 1)
     {
-        endGame(1, finish, array);
+        endGame(1, finish, dynamic);
     }
 }
 
-void endGame(int condition, int * finish, Case array[sizeX][sizeY])
+void endGame(int condition, int* finish, DynamicArray* dynamic)
 {
-    for (int j = 0; j < sizeX * sizeY; j++)
+    for (int j = 0; j < dynamic->sizeX * dynamic->sizeY; j++)
     {
-        array[0][j].reveal = 1;
+        dynamic->elm[convertCoordToLen(j, 0, dynamic->sizeX)].val->reveal = 1;
     }
-    printTable(array);
+    printTable(dynamic);
 
-    int ask = -1;
+    char ask = -1;
     switch (condition)
     {
     case 0:
-        printf("You losed ! Try Again ! \n Type 1 to play again and 0 to exit : ");
+        printf("You losed ! Try Again ! \nDo you want to start a new game ? (y/n) > ");
         break;
     case 1:
-        printf("Well played ! You Won ! \n Type 1 to play again and 0 to exit : ");
+        printf("Well played ! You Won ! \nDo you want to start a new game ? (y/n) > ");
         break;
     }
-    while (ask != 0 && ask != 1)
+    while (ask != 'y' && ask != 'n')
     {
-        scanf("%d", &ask);
+        scanf_s("%s", &ask);
     }
     switch (ask)
     {
-    case 0:
+    case 'n':
         *finish = 0;
         break;
-    case 1:
+    case 'y':
+        dynamic = Create();
         break;
     }
     system("cls");
 }
 
-void revealCase(Case array[sizeX][sizeY], int posX, int posY)
+void revealCase(DynamicArray* dynamic, int posX, int posY)
 {
     int startX = max(0, posX - 1);
-    int endX = min(sizeX, posX +2);
+    int endX = min(dynamic->sizeX, posX + 2);
     int startY = max(0, posY - 1);
-    int endY = min(sizeY, posY +2);
+    int endY = min(dynamic->sizeY, posY + 2);
 
-    array[posX][posY].reveal = 1;
-    if (array[posX][posY].content == 0) {
+    dynamic->elm[convertCoordToLen(posX, posY, dynamic->sizeX)].val->reveal = 1;
+    if (dynamic->elm[convertCoordToLen(posX, posY, dynamic->sizeX)].val->content == 0) {
         for (int a = startX; a < endX; a++)
         {
             for (int b = startY; b < endY; b++)
             {
-                if (array[a][b].reveal == 0)
+                if (dynamic->elm[convertCoordToLen(a, b, dynamic->sizeX)].val->reveal == 0)
                 {
-                    revealCase(array, a, b);
+                    revealCase(dynamic, a, b);
                 }
             }
         }
     }
 }
 
-void printTable(Case array[sizeX][sizeY])
+void printTable(DynamicArray* dynamic)
 {
-    printf("\n   ");
-    for (int i = 0; i < sizeY; i++)
+    int larg = largInt(dynamic->sizeX + 1);
+    printf("  %s", repeatChar(" ", larg));
+    for (int i = 0; i < dynamic->sizeY; i++)
     {
-        printf("%d ", i);
+        if (i == dynamic->selectY)
+        {
+            Color(1, 0);
+        }
+        printf("%d %s", i + 1, repeatChar(" ", larg - largInt(i)));
+        Color(15, 0);
     }
     printf("\n\n");
-    for (int a = 0; a < sizeX; a++)
+    for (int a = 0; a < dynamic->sizeX; a++)
     {
-        printf("%d  ", a);
-        for (int b = 0; b < sizeY; b++)
+        if (a == dynamic->selectX)
         {
-            if (array[a][b].flaged == 1)
+            Color(1, 0);
+        }
+        printf("%s%d  ", repeatChar(" ", larg - largInt(a + 1)), a + 1);
+        Color(15, 0);
+        for (int b = 0; b < dynamic->sizeY; b++)
+        {
+            int background = 0;
+            if (dynamic->selectX == a && dynamic->selectY == b)
             {
-                printf("F ");
+                background = 1;
             }
-            else if (array[a][b].reveal == 0)
+            if (dynamic->elm[convertCoordToLen(a, b, dynamic->sizeX)].val->flaged == 1)
             {
-                printf("? ");
+                Color(10, background);
+                printf("F");
             }
-            else if (array[a][b].content == -1)
+            else if (dynamic->elm[convertCoordToLen(a, b, dynamic->sizeX)].val->reveal == 0)
             {
-                printf("* ");
+                Color(15, background);
+                printf("?");
+            }
+            else if (dynamic->elm[convertCoordToLen(a, b, dynamic->sizeX)].val->content == -1)
+            {
+                Color(4, background);
+                printf("*");
             }
             else
             {
-                printf("%d ", array[a][b].content);
+                Color(13, background);
+                if (dynamic->elm[convertCoordToLen(a, b, dynamic->sizeX)].val->content == 0)
+                {
+                    Color(8, background);
+                }
+                printf("%d", dynamic->elm[convertCoordToLen(a, b, dynamic->sizeX)].val->content);
             }
+            printf("%s", repeatChar(" ", larg - 1));
+            Color(15, 0);
+            printf(" ");
         }
-        printf("  %d\n", a);
+        if (a == dynamic->selectX)
+        {
+            Color(1, 0);
+        }
+        printf(" %d\n", a + 1);
+        Color(15, 0);
     }
-    printf("\n   ");
-    for (int i = 0; i < sizeY; i++)
+    printf("\n  %s", repeatChar(" ", larg));
+    for (int i = 0; i < dynamic->sizeY; i++)
     {
-        printf("%d ", i);
+        if (i == dynamic->selectY)
+        {
+            Color(1, 0);
+        }
+        printf("%d %s", i + 1, repeatChar(" ", larg - largInt(i)));
+        Color(15, 0);
     }
     printf("\n\n");
 }
@@ -240,7 +389,7 @@ int main()
 {
     app();
 
-        printf("\n\nProgram ended, press any button to exit the code...");
-    getch();
-    return(0);
+    printf("\n\nProgram ended, press any button to exit the code...");
+    _getch();
+    return 0;
 }
