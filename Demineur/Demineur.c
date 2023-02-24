@@ -158,7 +158,6 @@ DynamicArray* Create()
 
     int seed = 201;
     DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY);
-    printf_s("%d", newDynamic->sizeX);
 
     int numBombs = newDynamic->sizeX * newDynamic->sizeY;
     switch (difficulty)
@@ -192,20 +191,43 @@ DynamicArray* Create()
     {
         for (int b = 0; b < newDynamic->sizeY; b++)
         {
-            Add(newDynamic, a, b, &oEmptyCase);
+            Case* newCase = (Case*)malloc(sizeof(Case));
+            newCase->content = oEmptyCase.content;
+            newCase->reveal = oEmptyCase.reveal;
+            newCase->flaged = oEmptyCase.flaged;
+
+            ArrayElm* newElm = (ArrayElm*)malloc(sizeof(ArrayElm));
+            newElm->X = a;
+            newElm->Y = b;
+            newElm->val = newCase;
+
+
+            newDynamic[convertCoordToLen(a, b, newDynamic->sizeX)].elm = newElm;
         }
     }
     int value = 0;
     int tryPos = 0;
     int posXBomb = -1;
     int posYBomb = -1;
-    DynamicArray* bomb = newDynamic;
+    DynamicArray* bomb = InitDynamicArray(sizeX, sizeY);
+    for (int a = 0; a < bomb->sizeX; a++)
+    {
+        for (int b = 0; b < bomb->sizeY; b++)
+        {
+            ArrayElm* newElm = (ArrayElm*)malloc(sizeof(ArrayElm));
+            newElm->X = a;
+            newElm->Y = b;
+
+            bomb[convertCoordToLen(a, b, bomb->sizeX)].elm = newElm;
+        }
+    }
     srand(time(NULL));
     for (int i = 0; i < numBombs; i++)
     {
-        int ri = rand() % sizeof(bomb);
-        int r = convertCoordToLen(bomb->elm[ri].X, bomb->elm[ri].Y, newDynamic->sizeX);
-        newDynamic->elm[r].val->content = -1;
+        int p = sizeof(bomb);
+        int ri = rand() % p;
+        int r = convertCoordToLen(bomb[ri].elm->X, bomb[ri].elm->Y, newDynamic->sizeX);
+        newDynamic[r].elm->val->content = -1;
         DeleteAt(bomb, ri);
 
         int rPos[2];
@@ -219,15 +241,16 @@ DynamicArray* Create()
         {
             for (int b = startY; b < endY; b++)
             {
-                if (newDynamic->elm[convertCoordToLen(a, b, newDynamic->sizeX)].val->content != -1)
+                int len = convertCoordToLen(a, b, newDynamic->sizeX);
+                if (newDynamic[len].elm->val->content != -1)
                 {
-                    newDynamic->elm[convertCoordToLen(a, b, newDynamic->sizeX)].val->content += 1;
+                    newDynamic[len].elm->val->content += 1;
                 }
             }
         }
     }
 
-    Free(bomb);
+    //Free(bomb);
 
     return newDynamic;
 }

@@ -23,6 +23,7 @@ typedef struct DynamicArray
     int selectY;
     int sizeX;
     int sizeY;
+    int length;
 } DynamicArray;
 
 void convertLenToCoord(int len, int sizeX, int coord[2]);
