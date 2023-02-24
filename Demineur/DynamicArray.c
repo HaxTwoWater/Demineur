@@ -70,7 +70,6 @@ void DeleteAt(DynamicArray *dynamic, int index)
         }
         dynamic[i].elm = lastArray[i + offset].elm;
     }
-
 }
 
 void Free(DynamicArray* dynamic)
