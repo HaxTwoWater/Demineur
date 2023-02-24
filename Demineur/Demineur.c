@@ -203,25 +203,19 @@ DynamicArray* Create()
     int posXBomb = -1;
     int posYBomb = -1;
     DynamicArray* bomb = InitDynamicArray(sizeX, sizeY);
-    for (int a = 0; a < bomb->sizeX; a++)
+    for (int a = 0; a < bomb->sizeX * bomb->sizeY; a++)
     {
-        for (int b = 0; b < bomb->sizeY; b++)
-        {
-            ArrayElm* newElm = (ArrayElm*)malloc(sizeof(ArrayElm));
-            newElm->X = a;
-            newElm->Y = b;
-
-            bomb[convertCoordToLen(a, b, bomb->sizeX)].elm = newElm;
-        }
+        bomb[a].selectX = a;
     }
     srand(time(NULL));
     for (int i = 0; i < numBombs; i++)
     {
-        int p = sizeof(bomb);
+        int p = bomb->length;
         int ri = rand() % p;
-        int r = convertCoordToLen(bomb[ri].elm->X, bomb[ri].elm->Y, newDynamic->sizeX);
+        int r = bomb[ri].selectX;
         newDynamic[r].elm->val->content = -1;
         DeleteAt(bomb, ri);
+        printf("%d, %d / %d\n", p, ri, r);
 
         int rPos[2];
         convertLenToCoord(r, newDynamic->sizeX, rPos);
