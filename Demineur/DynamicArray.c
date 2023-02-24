@@ -42,6 +42,20 @@ void Add(DynamicArray *dynamic, int posX, int posY, Case *c)
 
 void DeleteAt(DynamicArray *dynamic, int index)
 {
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->sizeX, dynamic->sizeY);
+    int offset = 0;
+    for (int i = 0; i < newDynamic->length - 1; i++)
+    {
+        if (i == index)
+        {
+            offset = 1;
+        }
+        newDynamic[i] = dynamic[i + offset];
+    }
+    //Free(dynamic);
+    dynamic = newDynamic;
+    dynamic->length--;
+    /*
     DynamicArray lastArray[100];
     lastArray->sizeX = dynamic->sizeX;
     lastArray->sizeY = dynamic->sizeY;
@@ -70,14 +84,17 @@ void DeleteAt(DynamicArray *dynamic, int index)
         }
         dynamic[i].elm = lastArray[i + offset].elm;
     }
-
+    */
 }
 
 void Free(DynamicArray* dynamic)
 {
     for (int i = 0; i < sizeof(dynamic); i++)
     {
-        free(dynamic[i].elm->val);
+        if (dynamic[i].elm->val != NULL) {
+            free(dynamic[i].elm->val);
+        }
+        
         free(dynamic[i].elm);
     }
     free(dynamic);
