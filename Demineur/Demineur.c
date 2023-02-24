@@ -20,19 +20,12 @@ int largInt(int a)
     }
     return larg;
 }
-char* repeatChar(char* string, int i)
+void repeatChar(char Charact, int i)
 {
-    char* returnString = "";
-    for (int k = 0; k < strlen(returnString); k++)
-    {
-        returnString[k] = 0;
-    }
-    returnString[0] = 0;
     for (int j = 0; j < i; j++)
     {
-        returnString = strcat_s(returnString, strlen(returnString), string);
+        printf("%c", Charact);
     }
-    return returnString;
 }
 void Color(int couleurDuTexte, int couleurDeFond)
 {
@@ -334,14 +327,16 @@ void revealCase(DynamicArray* dynamic, int posX, int posY)
 void printTable(DynamicArray* dynamic)
 {
     int larg = largInt(dynamic->sizeX + 1);
-    printf("  %s", repeatChar(" ", larg));
+    printf("  ");
+    repeatChar(" ", larg);
     for (int i = 0; i < dynamic->sizeY; i++)
     {
         if (i == dynamic->selectY)
         {
             Color(1, 0);
         }
-        printf("%d %s", i + 1, repeatChar(" ", larg - largInt(i)));
+        printf("%d ", i + 1);
+        repeatChar(" ", larg - largInt(i));
         Color(15, 0);
     }
     printf("\n\n");
@@ -351,7 +346,8 @@ void printTable(DynamicArray* dynamic)
         {
             Color(1, 0);
         }
-        printf("%s%d  ", repeatChar(" ", larg - largInt(a + 1)), a + 1);
+        repeatChar(" ", larg - largInt(a + 1));
+        printf("%d  ", a + 1);
         Color(15, 0);
         for (int b = 0; b < dynamic->sizeY; b++)
         {
@@ -384,7 +380,7 @@ void printTable(DynamicArray* dynamic)
                 }
                 printf("%d", dynamic->elm[convertCoordToLen(a, b, dynamic->sizeX)].val->content);
             }
-            printf("%s", repeatChar(" ", larg - 1));
+            repeatChar(" ", larg - 1);
             Color(15, 0);
             printf(" ");
         }
@@ -395,14 +391,16 @@ void printTable(DynamicArray* dynamic)
         printf(" %d\n", a + 1);
         Color(15, 0);
     }
-    printf("\n  %s", repeatChar(" ", larg));
+    printf("\n  ");
+    repeatChar(" ", larg);
     for (int i = 0; i < dynamic->sizeY; i++)
     {
         if (i == dynamic->selectY)
         {
             Color(1, 0);
         }
-        printf("%d %s", i + 1, repeatChar(" ", larg - largInt(i)));
+        printf("%d ", i + 1);
+        repeatChar(" ", larg - largInt(i));
         Color(15, 0);
     }
     printf("\n\n");
