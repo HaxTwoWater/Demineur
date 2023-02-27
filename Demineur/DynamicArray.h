@@ -30,6 +30,6 @@ void convertLenToCoord(int len, int sizeX, int coord[2]);
 int convertCoordToLen(int x, int y, int sizeX);
 DynamicArray* InitDynamicArray(int sizeX, int sizeY);
 void Add(DynamicArray* dynamic, int posX, int posY, Case* c);
-void DeleteAt(DynamicArray* dynamic, int index);
+DynamicArray* DeleteAt(DynamicArray* dynamic, int index);
 void Free(DynamicArray* dynamic);
 #endif

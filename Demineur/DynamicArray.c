@@ -16,13 +16,23 @@ int convertCoordToLen(int x, int y, int sizeX)
 DynamicArray* InitDynamicArray(int sizeX, int sizeY)
 {
     int l = sizeX * sizeY;
-    DynamicArray* dynamic = (DynamicArray*)malloc(l * sizeof(DynamicArray));
-    dynamic->elm = (ArrayElm*)malloc(sizeof(ArrayElm));
+    DynamicArray* dynamic = (DynamicArray*)malloc(sizeof(DynamicArray));
+    dynamic->elm = (ArrayElm*)malloc(sizeof(ArrayElm) * l);
     dynamic->sizeX = sizeX;
     dynamic->sizeY = sizeY;
     dynamic->selectX = sizeX / 2;
     dynamic->selectY = sizeY / 2;
     dynamic->length = l;
+    for (int i = 0; i < dynamic->sizeX; i++)
+    {
+        for (int j = 0; j < dynamic->sizeY; j++)
+        {
+            int index = convertCoordToLen(i, j, sizeX);
+            dynamic->elm[index].val = (Case*)malloc(sizeof(Case));
+            dynamic->elm[index].X = i;
+            dynamic->elm[index].Y = j;
+        }
+    }
     return dynamic;
 }
 
@@ -40,21 +50,22 @@ void Add(DynamicArray *dynamic, int posX, int posY, Case *c)
     dynamic->elm[sizeof(dynamic)] = newElm;
 }
 
-void DeleteAt(DynamicArray *dynamic, int index)
+DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
 {
-    DynamicArray* newDynamic = InitDynamicArray(dynamic->sizeX, dynamic->sizeY);
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1);
     int offset = 0;
-    for (int i = 0; i < newDynamic->length - 1; i++)
+    for (int i = 0; i < newDynamic->length; i++)
     {
         if (i == index)
         {
             offset = 1;
         }
-        newDynamic[i] = dynamic[i + offset];
+        newDynamic->elm[i] = dynamic->elm[i + offset];
     }
     //Free(dynamic);
-    dynamic = newDynamic;
-    dynamic->length--;
+    return newDynamic;
+
+
     /*
     DynamicArray lastArray[100];
     lastArray->sizeX = dynamic->sizeX;
