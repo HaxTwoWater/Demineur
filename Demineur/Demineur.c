@@ -10,6 +10,11 @@ int max(int a, int b) { return (a < b) ? b : a; }
 #include <stdlib.h>
 #include <windows.h>
 
+void Clear() {
+    for (int n = 0; n < 10; n++)
+        printf("\n\n\n\n\n\n\n\n\n\n");
+}
+
 int largInt(int a)
 {
     int larg = 1;
@@ -98,8 +103,7 @@ void app()
                 break;
             }
         }
-        system("cls");
-
+        Clear();
         int content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
 
         if (play == 'r')
@@ -127,7 +131,7 @@ void app()
             }
         }
     }
-    Free(dynamic);
+    //Free(dynamic);
 }
 
 DynamicArray* Create()
@@ -135,19 +139,19 @@ DynamicArray* Create()
     int sizeX = -1;
     int sizeY = -1;
     int difficulty = -1;
-    system("cls");
+    Clear();
     printf("Choose a size with the format x/y : ");
     while (sizeX < 0 || sizeY < 0)
     {
         scanf_s("%d/%d", &sizeX, &sizeY);
     }
-    system("cls");
+    Clear();
     printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
     while (difficulty < 0 || difficulty > 5)
     {
         scanf_s("%d", &difficulty);
     }
-    system("cls");
+    Clear();
 
     int seed = 201;
     DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY);
@@ -229,7 +233,7 @@ DynamicArray* Create()
         }
     }
 
-    //Free(bomb);
+    Free(bomb);
 
     return newDynamic;
 }
@@ -286,7 +290,7 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
         dynamic = Create();
         break;
     }
-    system("cls");
+    Clear();
 }
 
 void revealCase(DynamicArray* dynamic, int posX, int posY)
