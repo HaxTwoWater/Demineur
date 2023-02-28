@@ -58,8 +58,10 @@ void app()
         int exitWhile = 1;
         while (exitWhile)
         {
+            int i = _getch();
+
             Case selectedCase;
-            switch (getch())
+            switch (i)
             {
             case 122:
                 exitWhile = 0;
@@ -144,12 +146,14 @@ DynamicArray* Create()
     while (sizeX < 0 || sizeY < 0)
     {
         scanf_s("%d/%d", &sizeX, &sizeY);
+        while (getchar() != '\n');
     }
     Clear();
     printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
     while (difficulty < 0 || difficulty > 5)
     {
         scanf_s("%d", &difficulty);
+        while (getchar() != '\n');
     }
     Clear();
 
