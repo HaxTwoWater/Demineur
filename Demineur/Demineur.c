@@ -2,10 +2,6 @@
 #include <string.h>
 #include <time.h>
 #include <conio.h>
-
-int min(int a, int b) { return (a > b) ? b : a; }
-int max(int a, int b) { return (a < b) ? b : a; }
-
 #include "DynamicArray.h"
 #include <stdlib.h>
 #include <windows.h>
