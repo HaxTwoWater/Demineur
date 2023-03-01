@@ -215,7 +215,6 @@ DynamicArray* Create()
         int r = convertCoordToLen(bomb->elm[ri].X, bomb->elm[ri].Y, bomb->sizeX);
         newDynamic->elm[r].val->content = -1;
         bomb = DeleteAt(bomb, ri);
-        printf("%d, %d / %d\n", p, ri, r);
 
         int rPos[2];
         convertLenToCoord(r, newDynamic->sizeX, rPos);
@@ -283,7 +282,9 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
     }
     while (ask != 'y' && ask != 'n')
     {
-        scanf_s("%s", &ask);
+        scanf_s("%s", &ask, 2);
+        printf("%c", ask);
+        while (getchar() != '\n');
     }
     switch (ask)
     {
