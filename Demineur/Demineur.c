@@ -56,6 +56,7 @@ void app()
 
         char play = ' ';
         int exitWhile = 1;
+        int content;
         while (exitWhile)
         {
             int i = _getch();
@@ -85,53 +86,45 @@ void app()
                 break;
 
             case 102:
-                exitWhile = 0;
                 // code for flag (key F)
+                content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
                 selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
                 if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
                 {
                     exitWhile = 0;
-                    play = 'f';
+                    if (content == -1)
+                    {
+                        dynamic->bombs = max(dynamic->bombs - 1, 0);
+                        dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->flaged = 1;
+                        checkEndGame(&finish, dynamic);
+                    }
+                    else
+                    {
+                        endGame(0, &finish, dynamic);
+                    }
                 }
                 break;
             case 32:
                 // code for reveal (key spacebar)
+                content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
                 selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
                 if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
                 {
                     exitWhile = 0;
-                    play = 'r';
+                    if (content == -1)
+                    {
+                        endGame(0, &finish, dynamic);
+                    }
+                    else
+                    {
+                        revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+                        checkEndGame(&finish, dynamic);
+                    }
                 }
                 break;
             }
         }
         Clear();
-        int content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
-
-        if (play == 'r')
-        {
-            if (content == -1)
-            {
-                endGame(0, &finish, dynamic);
-            }
-            else
-            {
-                revealCase(dynamic, dynamic->selectX, dynamic->selectY);
-                checkEndGame(&finish, dynamic);
-            }
-        }
-        else if (play == 'f')
-        {
-            if (content == -1)
-            {
-                dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->flaged = 1;
-                checkEndGame(&finish, dynamic);
-            }
-            else
-            {
-                endGame(0, &finish, dynamic);
-            }
-        }
     }
     //Free(dynamic);
 }
@@ -161,12 +154,22 @@ DynamicArray* Create()
     Clear();
     int time3 = time(NULL);
     printf("Choose a a seed (0 for random seed) : ");
-    scanf_s("%d", &difficulty);
+    scanf_s("%d", &seed);
     while (getchar() != '\n');
     Clear();
     int time4 = time(NULL);
 
-    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY);
+    switch (seed)
+    {
+        case 0:
+            seed = time1 + time2 + time3 + time4;
+			break;
+        default:
+			break;
+    }
+    srand(seed);
+
+    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY, seed);
 
     int numBombs = newDynamic->sizeX * newDynamic->sizeY;
     switch (difficulty)
@@ -190,16 +193,7 @@ DynamicArray* Create()
         numBombs = numBombs * 10 / 72;
         break;
     }
-
-    switch (seed)
-    {
-        case 0:
-			srand((int) (time1 + time2 + time3 + time4)/4);
-			break;
-        default:
-			srand(seed);
-			break;
-    }
+    newDynamic->bombs = numBombs;
 
     Case oEmptyCase;
     oEmptyCase.content = 0;
@@ -340,7 +334,7 @@ void revealCase(DynamicArray* dynamic, int posX, int posY)
 void printTable(DynamicArray* dynamic)
 {
     int larg = largInt(dynamic->sizeX + 1);
-    printf("  ");
+    printf("Seed: %d\nBombs remaining: %d\n\n  ", dynamic->seed, dynamic->bombs);
     repeatChar(' ', larg);
     for (int i = 0; i < dynamic->sizeY; i++)
     {
