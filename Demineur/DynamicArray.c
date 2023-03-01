@@ -13,7 +13,7 @@ int convertCoordToLen(int x, int y, int sizeX)
     return (y * sizeX + x);
 }
 
-DynamicArray* InitDynamicArray(int sizeX, int sizeY)
+DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed)
 {
     int l = sizeX * sizeY;
     DynamicArray* dynamic = (DynamicArray*)malloc(sizeof(DynamicArray));
@@ -23,6 +23,8 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY)
     dynamic->selectX = sizeX / 2;
     dynamic->selectY = sizeY / 2;
     dynamic->length = l;
+    dynamic->seed = seed;
+    dynamic->bombs = 0;
     for (int i = 0; i < dynamic->sizeX; i++)
     {
         for (int j = 0; j < dynamic->sizeY; j++)
@@ -52,7 +54,7 @@ void Add(DynamicArray *dynamic, int posX, int posY, Case *c)
 
 DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
 {
-    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1);
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed);
     int offset = 0;
     for (int i = 0; i < newDynamic->length; i++)
     {

@@ -2,10 +2,6 @@
 #include <string.h>
 #include <time.h>
 #include <conio.h>
-
-int min(int a, int b) { return (a > b) ? b : a; }
-int max(int a, int b) { return (a < b) ? b : a; }
-
 #include "DynamicArray.h"
 #include <stdlib.h>
 #include <windows.h>
@@ -56,6 +52,7 @@ void app()
 
         char play = ' ';
         int exitWhile = 1;
+        int content;
         while (exitWhile)
         {
             int i = _getch();
@@ -85,55 +82,47 @@ void app()
                 break;
 
             case 102:
-                exitWhile = 0;
                 // code for flag (key F)
+                content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
                 selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
                 if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
                 {
                     exitWhile = 0;
-                    play = 'f';
+                    if (content == -1)
+                    {
+                        dynamic->bombs = max(dynamic->bombs - 1, 0);
+                        dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->flaged = 1;
+                        checkEndGame(&finish, dynamic);
+                    }
+                    else
+                    {
+                        endGame(0, &finish, dynamic);
+                    }
                 }
                 break;
             case 32:
                 // code for reveal (key spacebar)
+                content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
                 selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
                 if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
                 {
                     exitWhile = 0;
-                    play = 'r';
+                    if (content == -1)
+                    {
+                        endGame(0, &finish, dynamic);
+                    }
+                    else
+                    {
+                        revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+                        checkEndGame(&finish, dynamic);
+                    }
                 }
                 break;
             }
         }
         Clear();
-        int content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
-
-        if (play == 'r')
-        {
-            if (content == -1)
-            {
-                endGame(0, &finish, dynamic);
-            }
-            else
-            {
-                revealCase(dynamic, dynamic->selectX, dynamic->selectY);
-                checkEndGame(&finish, dynamic);
-            }
-        }
-        else if (play == 'f')
-        {
-            if (content == -1)
-            {
-                dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->flaged = 1;
-                checkEndGame(&finish, dynamic);
-            }
-            else
-            {
-                endGame(0, &finish, dynamic);
-            }
-        }
     }
-    //Free(dynamic);
+    Free(dynamic);
 }
 
 DynamicArray* Create()
@@ -141,7 +130,9 @@ DynamicArray* Create()
     int sizeX = -1;
     int sizeY = -1;
     int difficulty = -1;
+    int seed = 0;
     Clear();
+    int time1 = time(NULL);
     printf("Choose a size with the format x/y : ");
     while (sizeX < 0 || sizeY < 0)
     {
@@ -149,6 +140,7 @@ DynamicArray* Create()
         while (getchar() != '\n');
     }
     Clear();
+    int time2 = time(NULL);
     printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
     while (difficulty < 0 || difficulty > 5)
     {
@@ -156,9 +148,24 @@ DynamicArray* Create()
         while (getchar() != '\n');
     }
     Clear();
+    int time3 = time(NULL);
+    printf("Choose a a seed (0 for random seed) : ");
+    scanf_s("%d", &seed);
+    while (getchar() != '\n');
+    Clear();
+    int time4 = time(NULL);
 
-    int seed = 201;
-    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY);
+    switch (seed)
+    {
+        case 0:
+            seed = time1 + time2 + time3 + time4;
+			break;
+        default:
+			break;
+    }
+    srand(seed);
+
+    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY, seed);
 
     int numBombs = newDynamic->sizeX * newDynamic->sizeY;
     switch (difficulty)
@@ -182,6 +189,7 @@ DynamicArray* Create()
         numBombs = numBombs * 10 / 72;
         break;
     }
+    newDynamic->bombs = numBombs;
 
     Case oEmptyCase;
     oEmptyCase.content = 0;
@@ -203,6 +211,10 @@ DynamicArray* Create()
     int posXBomb = -1;
     int posYBomb = -1;
     DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1);
+    srand(time(NULL));
+    srand(time(NULL));
+    srand(time(NULL));
+    srand(time(NULL));
     srand(time(NULL));
     for (int i = 0; i < numBombs; i++)
     {
@@ -277,7 +289,7 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
     }
     while (ask != 'y' && ask != 'n')
     {
-        scanf_s("%c", &ask, 1);
+        scanf_s("%s", &ask, 1);
         printf("%c", ask);
         while (getchar() != '\n');
     }
@@ -320,7 +332,7 @@ void revealCase(DynamicArray* dynamic, int posX, int posY)
 void printTable(DynamicArray* dynamic)
 {
     int larg = largInt(dynamic->sizeX + 1);
-    printf("  ");
+    printf("Seed: %d\nBombs remaining: %d\n\n  ", dynamic->seed, dynamic->bombs);
     repeatChar(' ', larg);
     for (int i = 0; i < dynamic->sizeY; i++)
     {
@@ -403,32 +415,6 @@ void printTable(DynamicArray* dynamic)
 int main()
 {
     app();
-    /*
-    DynamicArray* arr = InitDynamicArray(3, 1);
-    arr->elm[0].val->content = 0;
-    arr->elm[1].val->content = 1;
-    arr->elm[2].val->content = 2;
-    arr = DeleteAt(arr, 0);
-    arr = DeleteAt(arr, 0);
-    arr = DeleteAt(arr, 0);
-    arr = DeleteAt(arr, 0);
-    Print(arr);
-    Free(arr);*/
-    /*
-    arr = DeleteAt(arr, 1);
-
-    for (int i = 0; i < arr->length; i++)
-    {
-        printf("%d\n", arr->elm[i].val->content);
-    }
-    arr = DeleteAt(arr, 0);
-
-    for (int i = 0; i < arr->length; i++)
-    {
-        printf("%d\n", arr->elm[i].val->content);
-    }
-    
-
-    printf("\n\nProgram ended, press any button to exit the code...");*/
+    _getch();
     return 0;
 }
