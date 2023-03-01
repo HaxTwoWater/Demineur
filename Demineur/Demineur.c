@@ -203,10 +203,6 @@ DynamicArray* Create()
     int posXBomb = -1;
     int posYBomb = -1;
     DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1);
-    for (int a = 0; a < bomb->sizeX * bomb->sizeY; a++)
-    {
-        bomb[a].selectX = a;
-    }
     srand(time(NULL));
     for (int i = 0; i < numBombs; i++)
     {
@@ -235,7 +231,6 @@ DynamicArray* Create()
             }
         }
     }
-
     Free(bomb);
 
     return newDynamic;
@@ -282,7 +277,7 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
     }
     while (ask != 'y' && ask != 'n')
     {
-        scanf_s("%s", &ask, 2);
+        scanf_s("%c", &ask, 1);
         printf("%c", ask);
         while (getchar() != '\n');
     }
@@ -292,6 +287,7 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
         *finish = 0;
         break;
     case 'y':
+        Free(dynamic);
         dynamic = Create();
         break;
     }
@@ -409,28 +405,30 @@ int main()
     app();
     /*
     DynamicArray* arr = InitDynamicArray(3, 1);
-
-    for (int i = 0; i < arr->length; i++)
-    {
-        arr->elm[i].val->content = 0;
-        printf("%d", arr->elm[i].val);
-    }
-
+    arr->elm[0].val->content = 0;
+    arr->elm[1].val->content = 1;
+    arr->elm[2].val->content = 2;
+    arr = DeleteAt(arr, 0);
+    arr = DeleteAt(arr, 0);
+    arr = DeleteAt(arr, 0);
+    arr = DeleteAt(arr, 0);
+    Print(arr);
+    Free(arr);*/
+    /*
     arr = DeleteAt(arr, 1);
 
     for (int i = 0; i < arr->length; i++)
     {
-        printf("%d", arr->elm[i].val);
+        printf("%d\n", arr->elm[i].val->content);
     }
     arr = DeleteAt(arr, 0);
 
     for (int i = 0; i < arr->length; i++)
     {
-        printf("%d", arr->elm[i].val);
+        printf("%d\n", arr->elm[i].val->content);
     }
-    */
+    
 
-    printf("\n\nProgram ended, press any button to exit the code...");
-    _getch();
+    printf("\n\nProgram ended, press any button to exit the code...");*/
     return 0;
 }

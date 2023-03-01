@@ -32,4 +32,5 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY);
 void Add(DynamicArray* dynamic, int posX, int posY, Case* c);
 DynamicArray* DeleteAt(DynamicArray* dynamic, int index);
 void Free(DynamicArray* dynamic);
+void Print(DynamicArray* dynamic);
 #endif

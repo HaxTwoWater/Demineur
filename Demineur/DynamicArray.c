@@ -79,3 +79,11 @@ void Free(DynamicArray* dynamic)
     free(dynamic->elm);
     free(dynamic);
 }
+
+void Print(DynamicArray* dynamic)
+{
+    for (int i = 0; i < dynamic->length; i++)
+    {
+        printf("%d\n", dynamic->elm[i].val->content);
+    }
+}
