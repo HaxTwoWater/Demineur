@@ -406,6 +406,28 @@ void printTable(DynamicArray* dynamic)
 int main()
 {
     app();
+    /*
+    DynamicArray* arr = InitDynamicArray(3, 1);
+
+    for (int i = 0; i < arr->length; i++)
+    {
+        arr->elm[i].val->content = 0;
+        printf("%d", arr->elm[i].val);
+    }
+
+    arr = DeleteAt(arr, 1);
+
+    for (int i = 0; i < arr->length; i++)
+    {
+        printf("%d", arr->elm[i].val);
+    }
+    arr = DeleteAt(arr, 0);
+
+    for (int i = 0; i < arr->length; i++)
+    {
+        printf("%d", arr->elm[i].val);
+    }
+    */
 
     printf("\n\nProgram ended, press any button to exit the code...");
     _getch();

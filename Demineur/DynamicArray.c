@@ -62,7 +62,8 @@ DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
         }
         newDynamic->elm[i] = dynamic->elm[i + offset];
     }
-    //Free(dynamic);
+    free(dynamic->elm);
+    free(dynamic);
     return newDynamic;
 }
 
@@ -70,7 +71,10 @@ void Free(DynamicArray* dynamic)
 {
     for (int i = 0; i < dynamic->length; i++)
     {
-        free(dynamic->elm[i].val);
+        if (dynamic->elm[i].val != NULL)
+        {
+            free(dynamic->elm[i].val);
+        }        
     }
     free(dynamic->elm);
     free(dynamic);
