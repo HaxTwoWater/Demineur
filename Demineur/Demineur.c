@@ -300,7 +300,6 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
     while (ask != 'y' && ask != 'n')
     {
         scanf_s("%s", &ask, 2);
-        //printf("%c", ask);
         while (getchar() != '\n');
     }
     switch (ask)
