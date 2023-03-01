@@ -141,7 +141,9 @@ DynamicArray* Create()
     int sizeX = -1;
     int sizeY = -1;
     int difficulty = -1;
+    int seed = 0;
     Clear();
+    int time1 = time(NULL);
     printf("Choose a size with the format x/y : ");
     while (sizeX < 0 || sizeY < 0)
     {
@@ -149,6 +151,7 @@ DynamicArray* Create()
         while (getchar() != '\n');
     }
     Clear();
+    int time2 = time(NULL);
     printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
     while (difficulty < 0 || difficulty > 5)
     {
@@ -156,8 +159,13 @@ DynamicArray* Create()
         while (getchar() != '\n');
     }
     Clear();
+    int time3 = time(NULL);
+    printf("Choose a a seed (0 for random seed) : ");
+    scanf_s("%d", &difficulty);
+    while (getchar() != '\n');
+    Clear();
+    int time4 = time(NULL);
 
-    int seed = 201;
     DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY);
 
     int numBombs = newDynamic->sizeX * newDynamic->sizeY;
@@ -181,6 +189,16 @@ DynamicArray* Create()
     default:
         numBombs = numBombs * 10 / 72;
         break;
+    }
+
+    switch (seed)
+    {
+        case 0:
+			srand((int) (time1 + time2 + time3 + time4)/4);
+			break;
+        default:
+			srand(seed);
+			break;
     }
 
     Case oEmptyCase;
@@ -207,7 +225,6 @@ DynamicArray* Create()
     {
         bomb[a].selectX = a;
     }
-    srand(time(NULL));
     for (int i = 0; i < numBombs; i++)
     {
         int p = bomb->length;
@@ -283,7 +300,7 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
     while (ask != 'y' && ask != 'n')
     {
         scanf_s("%s", &ask, 2);
-        printf("%c", ask);
+        //printf("%c", ask);
         while (getchar() != '\n');
     }
     switch (ask)
@@ -409,6 +426,6 @@ int main()
     app();
 
     printf("\n\nProgram ended, press any button to exit the code...");
-    _getch();
+    int end = _getch();
     return 0;
 }
