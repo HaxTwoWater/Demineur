@@ -63,22 +63,22 @@ void app()
             case 122:
                 exitWhile = 0;
                 // code for arrow up
-                dynamic->selectX = max(dynamic->selectX - 1, 0);
+                dynamic->selectX = ((dynamic->selectX - 1) % dynamic->sizeX + dynamic->sizeX) % dynamic->sizeX;
                 break;
             case 115:
                 exitWhile = 0;
                 // code for arrow down
-                dynamic->selectX = min(dynamic->selectX + 1, dynamic->sizeX - 1);
+                dynamic->selectX = ((dynamic->selectX + 1) % dynamic->sizeX + dynamic->sizeX) % dynamic->sizeX;
                 break;
             case 100:
                 exitWhile = 0;
                 // code for arrow right
-                dynamic->selectY = min(dynamic->selectY + 1, dynamic->sizeY - 1);
+                dynamic->selectY = ((dynamic->selectY + 1) % dynamic->sizeY + dynamic->sizeY) % dynamic->sizeY;
                 break;
             case 113:
                 exitWhile = 0;
                 // code for arrow left
-                dynamic->selectY = max(dynamic->selectY - 1, 0);
+                dynamic->selectY = ((dynamic->selectY - 1) % dynamic->sizeY + dynamic->sizeY) % dynamic->sizeY;
                 break;
 
             case 102:
@@ -149,7 +149,7 @@ DynamicArray* Create()
     }
     Clear();
     int time3 = time(NULL);
-    printf("Choose a a seed (0 for random seed) : ");
+    printf("Choose a seed (0 for random seed) : ");
     scanf_s("%d", &seed);
     while (getchar() != '\n');
     Clear();
@@ -158,6 +158,7 @@ DynamicArray* Create()
     switch (seed)
     {
         case 0:
+            printf("random seed");
             seed = time1 + time2 + time3 + time4;
 			break;
         default:
@@ -211,11 +212,6 @@ DynamicArray* Create()
     int posXBomb = -1;
     int posYBomb = -1;
     DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1);
-    srand(time(NULL));
-    srand(time(NULL));
-    srand(time(NULL));
-    srand(time(NULL));
-    srand(time(NULL));
     for (int i = 0; i < numBombs; i++)
     {
         int p = bomb->length;
@@ -289,7 +285,7 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
     }
     while (ask != 'y' && ask != 'n')
     {
-        scanf_s("%s", &ask, 1);
+        scanf_s("%s", &ask, 2);
         printf("%c", ask);
         while (getchar() != '\n');
     }
@@ -415,6 +411,7 @@ void printTable(DynamicArray* dynamic)
 int main()
 {
     app();
+
     _getch();
     return 0;
 }
