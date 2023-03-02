@@ -388,11 +388,11 @@ void printTable(DynamicArray* dynamic)
                 Color(10, background);
                 printf("F");
             }
-            /*else if (dynamic->elm[index].val->reveal == 0)
+            else if (dynamic->elm[index].val->reveal == 0)
             {
                 Color(15, background);
                 printf("?");
-            }*/
+            }
             else if (dynamic->elm[index].val->content == -1)
             {
                 Color(4, background);
