@@ -141,7 +141,7 @@ DynamicArray* Create()
     int seed = 0;
     Clear();
     printf("Choose a size with the format x/y : ");
-    while (sizeX < 0 || sizeY < 0)
+    while (sizeX < 5 || sizeY < 5)
     {
         scanf_s("%d/%d", &sizeX, &sizeY);
         while (getchar() != '\n');
