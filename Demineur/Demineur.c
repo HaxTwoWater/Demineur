@@ -40,6 +40,7 @@ void printTable(DynamicArray* dynamic);
 void checkEndGame(int* finish, DynamicArray* dynamic);
 void endGame(int condition, int* finish, DynamicArray* dynamic);
 DynamicArray* Create();
+void Generate(DynamicArray* newDynamic, int playPos);
 
 void app()
 {
@@ -85,7 +86,7 @@ void app()
                 // code for flag (key F)
                 content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
                 selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
-                if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
+                if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 1)
                 {
                     exitWhile = 0;
                     if (content == -1)
@@ -104,7 +105,7 @@ void app()
                 // code for reveal (key spacebar)
                 content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
                 selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
-                if (selectedCase.reveal == 0 && selectedCase.flaged == 0)
+                if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 1)
                 {
                     exitWhile = 0;
                     if (content == -1)
@@ -117,6 +118,12 @@ void app()
                         checkEndGame(&finish, dynamic);
                     }
                 }
+                else if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 0)
+                {
+					exitWhile = 0;
+					Generate(dynamic, convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX));
+					revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+				}
                 break;
             }
         }
@@ -132,7 +139,6 @@ DynamicArray* Create()
     int difficulty = -1;
     int seed = 0;
     Clear();
-    int time1 = time(NULL);
     printf("Choose a size with the format x/y : ");
     while (sizeX < 0 || sizeY < 0)
     {
@@ -140,7 +146,6 @@ DynamicArray* Create()
         while (getchar() != '\n');
     }
     Clear();
-    int time2 = time(NULL);
     printf("Choose a difficulty between 0 and 5 (0 is the most easy, and 5 the most difficult) : ");
     while (difficulty < 0 || difficulty > 5)
     {
@@ -148,21 +153,19 @@ DynamicArray* Create()
         while (getchar() != '\n');
     }
     Clear();
-    int time3 = time(NULL);
     printf("Choose a seed (0 for random seed) : ");
     scanf_s("%d", &seed);
     while (getchar() != '\n');
     Clear();
-    int time4 = time(NULL);
 
     switch (seed)
     {
-        case 0:
-            printf("random seed");
-            seed = time1 + time2 + time3 + time4;
-			break;
-        default:
-			break;
+    case 0:
+        printf("random seed");
+        seed = time(NULL);
+        break;
+    default:
+        break;
     }
     srand(seed);
 
@@ -207,11 +210,35 @@ DynamicArray* Create()
             c->flaged = oEmptyCase.flaged;
         }
     }
+    return newDynamic;
+}
+
+void Generate(DynamicArray * newDynamic, int playPos)
+{
     int value = 0;
     int tryPos = 0;
     int posXBomb = -1;
     int posYBomb = -1;
+    int sizeX = newDynamic->sizeX;
+    int sizeY = newDynamic->sizeY;
+    int numBombs = newDynamic->bombs;
     DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1);
+    int Pos[2] = { 0, 0 };
+    convertLenToCoord(playPos, sizeX, Pos);
+    int sX = max(-1, Pos[0] - 2);
+    int eX = min(newDynamic->sizeX, Pos[0] + 1);
+    int sY = max(-1, Pos[1] - 2);
+    int eY = min(newDynamic->sizeY, Pos[1] + 1);
+
+    for (int b = eY; b > sY; b++)
+    {
+        for (int a = eX; a > sX; a++)
+        {
+            bomb = DeleteAt(bomb, convertCoordToLen(a, b, newDynamic->sizeX));
+            a -= 2;
+        }
+        b -= 2;
+    }
     for (int i = 0; i < numBombs; i++)
     {
         int p = bomb->length;
@@ -240,8 +267,6 @@ DynamicArray* Create()
         }
     }
     Free(bomb);
-
-    return newDynamic;
 }
 
 void checkEndGame(int* finish, DynamicArray* dynamic)
@@ -363,11 +388,11 @@ void printTable(DynamicArray* dynamic)
                 Color(10, background);
                 printf("F");
             }
-            else if (dynamic->elm[index].val->reveal == 0)
+            /*else if (dynamic->elm[index].val->reveal == 0)
             {
                 Color(15, background);
                 printf("?");
-            }
+            }*/
             else if (dynamic->elm[index].val->content == -1)
             {
                 Color(4, background);

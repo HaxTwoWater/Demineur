@@ -26,6 +26,7 @@ typedef struct DynamicArray
     int length;
     int seed;
     int bombs;
+    int generated;
 } DynamicArray;
 
 void convertLenToCoord(int len, int sizeX, int coord[2]);

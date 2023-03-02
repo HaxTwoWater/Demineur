@@ -25,6 +25,7 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed)
     dynamic->length = l;
     dynamic->seed = seed;
     dynamic->bombs = 0;
+    dynamic->generated = 0;
     for (int i = 0; i < dynamic->sizeX; i++)
     {
         for (int j = 0; j < dynamic->sizeY; j++)
