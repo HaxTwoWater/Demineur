@@ -123,6 +123,7 @@ void app()
 					exitWhile = 0;
 					Generate(dynamic, convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX));
 					revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+                    dynamic->generated = 1;
 				}
                 break;
             }
