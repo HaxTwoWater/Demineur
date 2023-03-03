@@ -299,7 +299,7 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
     }
     printTable(dynamic);
 
-    char ask = -1;
+    char ask = 122;
     switch (condition)
     {
     case 0:
@@ -309,7 +309,7 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
         printf("Well played ! You Won ! \nDo you want to start a new game ? (y/n) > ");
         break;
     }
-    while (ask != 'y' && ask != 'n')
+    while (ask != 110 && ask != 121)
     {
         scanf_s("%s", &ask, 2);
         printf("%c", ask);
@@ -317,10 +317,12 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
     }
     switch (ask)
     {
-    case 'n':
+    case 110:
+        // Le joueur ne souhaite pas rejouer (110 = 'n')
         *finish = 0;
         break;
-    case 'y':
+    case 121:
+        // Le joueur souhaite rejouer (121 = 'y')
         Free(dynamic);
         dynamic = Create();
         break;
