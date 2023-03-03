@@ -311,8 +311,7 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
     }
     while (ask != 110 && ask != 121)
     {
-        scanf_s("%s", &ask, 2);
-        printf("%c", ask);
+        scanf_s("%c", &ask, 1);
         while (getchar() != '\n');
     }
     switch (ask)
