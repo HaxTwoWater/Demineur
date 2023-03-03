@@ -130,7 +130,6 @@ void app()
         }
         Clear();
     }
-    Free(dynamic);
 }
 
 DynamicArray* Create()
