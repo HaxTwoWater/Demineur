@@ -31,7 +31,7 @@ typedef struct DynamicArray
 
 void convertLenToCoord(int len, int sizeX, int coord[2]);
 int convertCoordToLen(int x, int y, int sizeX);
-DynamicArray* InitDynamicArray(int sizeX, int sizeY);
+DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed);
 void Add(DynamicArray* dynamic, int posX, int posY, Case* c);
 DynamicArray* DeleteAt(DynamicArray* dynamic, int index);
 void Free(DynamicArray* dynamic);

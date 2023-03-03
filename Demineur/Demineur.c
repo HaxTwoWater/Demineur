@@ -38,7 +38,7 @@ void Color(int couleurDuTexte, int couleurDeFond)
 void revealCase(DynamicArray* dynamic, int posX, int posY);
 void printTable(DynamicArray* dynamic);
 void checkEndGame(int* finish, DynamicArray* dynamic);
-void endGame(int condition, int* finish, DynamicArray* dynamic);
+DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic);
 DynamicArray* Create();
 void Generate(DynamicArray* newDynamic, int playPos);
 
@@ -97,7 +97,7 @@ void app()
                     }
                     else
                     {
-                        endGame(0, &finish, dynamic);
+                        dynamic = endGame(0, &finish, dynamic);
                     }
                 }
                 break;
@@ -110,7 +110,7 @@ void app()
                     exitWhile = 0;
                     if (content == -1)
                     {
-                        endGame(0, &finish, dynamic);
+                        dynamic = endGame(0, &finish, dynamic);
                     }
                     else
                     {
@@ -223,7 +223,7 @@ void Generate(DynamicArray * newDynamic, int playPos)
     int sizeX = newDynamic->sizeX;
     int sizeY = newDynamic->sizeY;
     int numBombs = newDynamic->bombs;
-    DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1);
+    DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1, 0);
     int Pos[2] = { 0, 0 };
     convertLenToCoord(playPos, sizeX, Pos);
     int sX = max(-1, Pos[0] - 2);
@@ -287,12 +287,13 @@ void checkEndGame(int* finish, DynamicArray* dynamic)
     }
     if (ending == 1)
     {
-        endGame(1, finish, dynamic);
+        dynamic = endGame(1, finish, dynamic);
     }
 }
 
-void endGame(int condition, int* finish, DynamicArray* dynamic)
+DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic)
 {
+    Clear();
     for (int j = 0; j < dynamic->sizeX * dynamic->sizeY; j++)
     {
         dynamic->elm[convertCoordToLen(j, 0, dynamic->sizeX)].val->reveal = 1;
@@ -314,19 +315,21 @@ void endGame(int condition, int* finish, DynamicArray* dynamic)
         scanf_s("%c", &ask, 1);
         while (getchar() != '\n');
     }
+    Clear();
     switch (ask)
     {
     case 110:
         // Le joueur ne souhaite pas rejouer (110 = 'n')
         *finish = 0;
+        Free(dynamic);
+        return NULL;
         break;
     case 121:
         // Le joueur souhaite rejouer (121 = 'y')
         Free(dynamic);
-        dynamic = Create();
+        return Create();
         break;
     }
-    Clear();
 }
 
 void revealCase(DynamicArray* dynamic, int posX, int posY)
