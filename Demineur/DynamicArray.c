@@ -39,20 +39,6 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed)
     return dynamic;
 }
 
-void Add(DynamicArray *dynamic, int posX, int posY, Case *c)
-{
-    ArrayElm newElm;
-    newElm.X = posX;
-    newElm.Y = posY;
-    newElm.val = c;
-
-    void* ptr = (DynamicArray*)realloc(dynamic, (sizeof(dynamic) + 1) * sizeof(DynamicArray));
-    if (ptr == NULL) return;
-    dynamic = ptr;
-    
-    dynamic->elm[sizeof(dynamic)] = newElm;
-}
-
 DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
 {
     DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed);
