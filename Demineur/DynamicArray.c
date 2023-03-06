@@ -17,7 +17,11 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, void* type, int e
 {
     int l = sizeX * sizeY;
     DynamicArray* dynamic = (DynamicArray*)malloc(sizeof(DynamicArray));
-    dynamic->elm = type;
+    dynamic->elm = malloc(elmSize * l);
+    for (int i = 0; i < l; i++)
+    {
+
+    }
     dynamic->elmSize = elmSize;
     dynamic->sizeX = sizeX;
     dynamic->sizeY = sizeY;
@@ -51,8 +55,8 @@ DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
     {
         *(newElm + i * newDynamic->elmSize) = *(oldElm + (i + 1) * dynamic->elmSize);
     }
-    //free(dynamic->elm);
-    //free(dynamic);
+    free(dynamic->elm);
+    free(dynamic);
     return newDynamic;
 }
 
