@@ -13,11 +13,12 @@ int convertCoordToLen(int x, int y, int sizeX)
     return (y * sizeX + x);
 }
 
-DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed)
+DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, void* type, int elmSize)
 {
     int l = sizeX * sizeY;
     DynamicArray* dynamic = (DynamicArray*)malloc(sizeof(DynamicArray));
-    dynamic->elm = (ArrayElm*)malloc(sizeof(ArrayElm) * l);
+    dynamic->elm = type;
+    dynamic->elmSize = elmSize;
     dynamic->sizeX = sizeX;
     dynamic->sizeY = sizeY;
     dynamic->selectX = sizeX / 2;
@@ -26,6 +27,7 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed)
     dynamic->seed = seed;
     dynamic->bombs = 0;
     dynamic->generated = 0;
+    /*
     for (int i = 0; i < dynamic->sizeX; i++)
     {
         for (int j = 0; j < dynamic->sizeY; j++)
@@ -36,33 +38,28 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed)
             dynamic->elm[index].Y = j;
         }
     }
+    */
     return dynamic;
 }
 
 DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
 {
-    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed);
-    int offset = 0;
-    for (int i = 0; i < newDynamic->length; i++)
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed, dynamic->elm, dynamic->elmSize);
+    char* newElm = newDynamic->elm;
+    char* oldElm = dynamic->elm;
+    for (int i = index; i < newDynamic->length; i++)
     {
-        if (i == index)
-        {
-            offset = 1;
-        }
-        newDynamic->elm[i] = dynamic->elm[i + offset];
+        *(newElm + i * newDynamic->elmSize) = *(oldElm + (i + 1) * dynamic->elmSize);
     }
-    free(dynamic->elm);
-    free(dynamic);
+    //free(dynamic->elm);
+    //free(dynamic);
     return newDynamic;
 }
 
-DynamicArray* AddTo(DynamicArray* dynamic, ArrayElm* elm) 
+/*
+DynamicArray* AddTo(DynamicArray* dynamic, void* elm) 
 {
-    DynamicArray* newDynamic = InitDynamicArray(dynamic->length + 1, 1, dynamic->seed);
-    for (int i = 0; i < newDynamic->length; i++)
-    {
-        newDynamic->elm[i] = dynamic->elm[i];
-    }
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed, dynamic->elm, dynamic->elmSize);
     newDynamic->elm[newDynamic->length] = *elm;
     free(dynamic->elm);
     free(dynamic);
@@ -89,3 +86,4 @@ void Print(DynamicArray* dynamic)
         printf("%d\n", dynamic->elm[i].val->content);
     }
 }
+*/

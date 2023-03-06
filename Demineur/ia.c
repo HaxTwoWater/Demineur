@@ -1,8 +1,7 @@
 #include "DynamicArray.h"
-#include <cstddef>
 #include <stdarg.h>
 #include <stdio.h>
-
+/*
 typedef struct Ia
 {
 	DynamicArray* RevealPlayabled;
@@ -59,3 +58,4 @@ void CreateGroup(int NumBombs, int CoordinateX, int CoordinateY, DynamicArray* T
         }
     }
 }
+*/

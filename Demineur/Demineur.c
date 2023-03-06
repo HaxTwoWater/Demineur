@@ -6,7 +6,7 @@
 #include "ia.h"
 #include <stdlib.h>
 #include <windows.h>
-
+/*
 void Clear() {
     for (int n = 0; n < 10; n++)
         printf("\n\n\n\n\n\n\n\n\n\n");
@@ -437,11 +437,27 @@ void printTable(DynamicArray* dynamic)
     }
     printf("\n\n");
 }
-
+*/
 int main()
 {
-    app();
+    //app();
 
+    int tabi[5] = { 1,2,3,4,5 };
+
+    DynamicArray* dynamic = InitDynamicArray(5, 1, 0, tabi, sizeof(int));
+
+    for (int i = 0; i < dynamic->length; i++)
+    {
+        printf("%d ", ((int*)dynamic->elm)[i]);
+    }
+    printf("\n");
+
+    dynamic = DeleteAt(dynamic, 5);
+
+    for (int i = 0; i < dynamic->length; i++)
+    {
+        printf("%d ", ((int*)dynamic->elm)[i]);
+    }
     _getch();
     return 0;
 }
