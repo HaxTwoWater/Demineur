@@ -3,6 +3,7 @@
 #include <time.h>
 #include <conio.h>
 #include "DynamicArray.h"
+#include "ia.h"
 #include <stdlib.h>
 #include <windows.h>
 
