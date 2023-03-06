@@ -56,6 +56,19 @@ DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
     return newDynamic;
 }
 
+DynamicArray* AddTo(DynamicArray* dynamic, ArrayElm* elm) 
+{
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->length + 1, 1, dynamic->seed);
+    for (int i = 0; i < newDynamic->length; i++)
+    {
+        newDynamic->elm[i] = dynamic->elm[i];
+    }
+    newDynamic->elm[newDynamic->length] = *elm;
+    free(dynamic->elm);
+    free(dynamic);
+    return newDynamic;
+}
+
 void Free(DynamicArray* dynamic)
 {
     for (int i = 0; i < dynamic->length; i++)
