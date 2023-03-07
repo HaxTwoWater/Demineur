@@ -133,3 +133,18 @@ void CheckGroups(Ia* ia)
         }
     }
 }
+
+int IaPlay(Ia* ia)
+{
+    for (int i = 0; i < ia->Groups->length; i++)
+    {
+        if (ia->Groups->elm[i].nbrBombs == ia->Groups->elm[i].length)
+        {
+			// Flag les coordonnée du groupe
+		}
+        else if (ia->Groups->elm[i].nbrBombs == 0)
+        {
+			// Reveal les coordonnée du groupe
+		}
+	}
+}
