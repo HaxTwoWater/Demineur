@@ -441,7 +441,6 @@ void printTable(DynamicArray* dynamic)
 int main()
 {
     //app();
-
     int tabi[5] = { 1,2,3,4,5 };
 
     DynamicArray* dynamic = InitDynamicArray(5, 1, 0, tabi, sizeof(int));
@@ -452,12 +451,50 @@ int main()
     }
     printf("\n");
 
-    dynamic = DeleteAt(dynamic, 5);
+    dynamic = DeleteAt(dynamic, 2);
 
     for (int i = 0; i < dynamic->length; i++)
     {
         printf("%d ", ((int*)dynamic->elm)[i]);
     }
+    printf("\n");
+
+    int n = 4;
+    dynamic = AddTo(dynamic, &n, sizeof(int));
+
+    for (int i = 0; i < dynamic->length; i++)
+    {
+        printf("%d ", ((int*)dynamic->elm)[i]);
+    }
+    Free(dynamic);
+    printf("\n");
+    //___________________________________________________________________________
+    double tabd[5] = { 1,2.5,3,4.3,5 };
+
+    dynamic = InitDynamicArray(5, 1, 0, tabd, sizeof(double));
+
+    for (int i = 0; i < dynamic->length; i++)
+    {
+        printf("%lf ", ((double*)dynamic->elm)[i]);
+    }
+    printf("\n");
+
+    dynamic = DeleteAt(dynamic, 2);
+
+    for (int i = 0; i < dynamic->length; i++)
+    {
+        printf("%lf ", ((double*)dynamic->elm)[i]);
+    }
+    printf("\n");
+
+    double d = 4.6;
+    dynamic = AddTo(dynamic, &d, sizeof(double));
+
+    for (int i = 0; i < dynamic->length; i++)
+    {
+        printf("%lf ", ((double*)dynamic->elm)[i]);
+    }
+
     _getch();
     return 0;
 }
