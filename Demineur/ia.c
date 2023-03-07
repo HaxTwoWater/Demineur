@@ -127,6 +127,7 @@ void CheckGroups(Ia* ia)
 							nbrBombs = maxBombs -a.length +verif;
 						}
                         // créer un groupe avec les coordonnée de crossGroup et le nombre de bombe nbrBombs
+
 					}
                 }
             }
