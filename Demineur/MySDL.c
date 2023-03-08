@@ -1,16 +1,23 @@
 #include <SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "MySDL.h"
+#include <SDL_image.h>
+#include "DynamicArray.h"
+#include <time.h>
 
 const int WIDTH = 320;
 const int HEIGHT = 480;
 const int POSITION_X = 800;
 const int POSITION_Y = 300;
 
-
-
-int main(int c, char* T[]) {
+void InitDemineurWindow() {
+    Cell c[25];
+    for (int i = 0; i < 25; i++) 
+    {
+        c[i].num = rand() % 9;
+    }
+    DynamicArray* cell = InitDynamicArray(5, 5, 0, c, sizeof(Cell));
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
     SDL_Window* window;
 
@@ -40,9 +47,7 @@ int main(int c, char* T[]) {
     caseFill.w = spawnCaseS - 2;
     caseFill.h = spawnCaseS - 2;
 
-    const char* image_path = "test.bmp";
-    SDL_Surface* image = SDL_LoadBMP(image_path);
-
+    const char* image_path = "src/1.png";
 
     if (window == NULL) { printf("%s\n", SDL_GetError()); exit(-1); }
     //dessiner un composant 
@@ -55,10 +60,12 @@ int main(int c, char* T[]) {
         if (SDL_PollEvent(&windowEvent)) {
             if (windowEvent.type == SDL_QUIT) { break; }
         }
+        
         //SDL_Renderer
         SDL_SetRenderDrawColor(renderer, 211, 211, 211, 127);
         SDL_RenderClear(renderer);
 
+        /*
         //Case placement
         SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
         SDL_RenderFillRect(renderer, &caseSurr);
@@ -70,17 +77,9 @@ int main(int c, char* T[]) {
         SDL_RenderFillRect(renderer, &rectFlag);
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderFillRect(renderer, &carreFlag);
+        */
 
-
-        if (!image) {
-            printf("Failed to load image at %s: %s\n", image_path, SDL_GetError());
-            return;
-        }
-        SDL_Texture* monImage = SDL_CreateTextureFromSurface(renderer, image);
-        SDL_FreeSurface(image);
-
-
-        SDL_RenderPresent(renderer);
+        Drawn(cell, renderer);
 
     }
     //SDL_Delay(5000);
@@ -89,5 +88,52 @@ int main(int c, char* T[]) {
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    return 0;
+    return;
+}
+
+void Drawn(DynamicArray* cell, SDL_Renderer* rend)
+{
+    for(int i = 0; i < cell->length / cell->sizeX; i++)
+    {
+        for (int j = 0; j < cell->sizeY; j++)
+        {
+            SDL_Surface* image;
+            printf("%d\n", *((Cell*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize));
+            switch (*((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))
+            {
+            case 1:
+                image = IMG_Load("src/1.png");
+                break;
+            case 2:
+                image = IMG_Load("src/2.png");
+                break;
+            case 3:
+                image = IMG_Load("src/3.png");
+                break;
+            case 4:
+                image = IMG_Load("src/4.png");
+                break;
+            case 5:
+                image = IMG_Load("src/5.png");
+                break;
+            case 6:
+                image = IMG_Load("src/6.png");
+                break;
+            case 7:
+                image = IMG_Load("src/7.png");
+                break;
+            case 8:
+                image = IMG_Load("src/8.png");
+                break;
+            default:
+                image = IMG_Load("src/revealed.png");
+                break;
+            }
+            SDL_Texture* monImage = SDL_CreateTextureFromSurface(rend, image);
+            SDL_FreeSurface(image);
+            SDL_Rect imgPos = { i * 30, j * 30, 30, 30 };
+            SDL_RenderCopy(rend, monImage, NULL, &imgPos);
+        }
+    }
+    SDL_RenderPresent(rend);
 }

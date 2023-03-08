@@ -6,6 +6,7 @@
 //#include "ia.h"
 #include <stdlib.h>
 #include <windows.h>
+#include "MySDL.h"
 /*
 void Clear() {
     for (int n = 0; n < 10; n++)
@@ -442,7 +443,7 @@ int main()
 {
     //app();
 
-
+    InitDemineurWindow();
 
     return 0;
 }
