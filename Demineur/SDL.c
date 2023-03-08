@@ -13,6 +13,7 @@ const int POSITION_Y = 300;
 int main(int c, char* T[]) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
     SDL_Window* window;
+
     window = SDL_CreateWindow("Hello SDL", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
     SDL_Rect carreFlag, rectFlag;
@@ -38,6 +39,9 @@ int main(int c, char* T[]) {
     caseFill.x = spawnCaseY + 1;
     caseFill.w = spawnCaseS - 2;
     caseFill.h = spawnCaseS - 2;
+
+    const char* image_path = "test.bmp";
+    SDL_Surface* image = SDL_LoadBMP(image_path);
 
 
     if (window == NULL) { printf("%s\n", SDL_GetError()); exit(-1); }
@@ -68,13 +72,11 @@ int main(int c, char* T[]) {
         SDL_RenderFillRect(renderer, &carreFlag);
 
 
-        const char* image_path = "test.bmp";
-        SDL_Surface* image = SDL_LoadBMP(image_path);
-
         if (!image) {
             printf("Failed to load image at %s: %s\n", image_path, SDL_GetError());
             return;
         }
+        SDL_Texture* monImage = SDL_CreateTextureFromSurface(renderer, image);
         SDL_FreeSurface(image);
 
 
