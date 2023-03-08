@@ -1,7 +1,8 @@
 #include "DynamicArray.h"
+#include <cstddef>
 #include <stdarg.h>
 #include <stdio.h>
-/*
+
 typedef struct Ia
 {
 	DynamicArray* RevealPlayabled;
@@ -45,7 +46,7 @@ void CreateGroup(int NumBombs, int CoordinateX, int CoordinateY, DynamicArray* T
     int startY = max(0, CoordinateY - 1);
     int endY = min(Table->sizeY, CoordinateY + 2);
 
-    // Créer un groupe de coordonée
+    // Crï¿½er un groupe de coordonï¿½e
     for (int a = startX; a < endX; a++)
     {
         for (int b = startY; b < endY; b++)
@@ -53,9 +54,8 @@ void CreateGroup(int NumBombs, int CoordinateX, int CoordinateY, DynamicArray* T
             int index = convertCoordToLen(a, b, Table->sizeX);
             if (Table->elm[index].val->reveal == 0)
             {
-                // Ajouter la coordoné dans le groupe de coordonée
+                // Ajouter la coordonï¿½ dans le groupe de coordonï¿½e
             }
         }
     }
 }
-*/
