@@ -39,7 +39,7 @@ Ia newIa()
     return ia;
 }
 
-void CreateGroup(int NumBombs, int CoordinateX, int CoordinateY, DynamicArray* Table)
+void CreateGroup(Ia* ia, int NumBombs, int CoordinateX, int CoordinateY, DynamicArray* Table)
 {
     int startX = max(0, CoordinateX - 1);
     int endX = min(Table->sizeX, CoordinateX + 2);
@@ -58,4 +58,94 @@ void CreateGroup(int NumBombs, int CoordinateX, int CoordinateY, DynamicArray* T
             }
         }
     }
+}
+
+void CheckGroups(Ia* ia)
+{
+    int repeat = 1;
+    while (repeat)
+    {
+        repeat = 0;
+        for (int i = 0; i < ia->Groups->length; i++)
+        {
+            for (int j = i + 1; j < ia->Groups->length; j++)
+            {
+                if (ia->Groups->elm[i] == ia->Groups->elm[j])
+                {
+                    // Supprimer le groupe j
+					repeat = 1;
+                }
+                else
+                {
+
+                    ArrayElm a;
+                    ArrayElm b;
+                    if (ia->Groups->elm[i].length <= ia->Groups->elm[j].length)
+                    {
+                        a = ia->Groups->elm[i];
+                        b = ia->Groups->elm[j];
+                    }
+                    else
+                    {
+                        a = ia->Groups->elm[j];
+						b = ia->Groups->elm[i];
+                    }
+
+                    int verif = 0;
+                    DynamicArray* crossGroup = InitDynamicArray(0,0,0);
+                    for (int k = 0; k < a.length; k++)
+                    {
+                        for (int l = 0; l < b.length; l++)
+                        {
+                            if (a.elm[k] == b.elm[l])
+                            {
+								verif++;
+                                l = b.length;
+                                // Ajouter la coordoné dans crossGroup
+							}
+						}
+					}
+
+                    if (verif == a.length)
+                    {
+						// retirer les coordonnée du groupe a dans le groupe b
+                        // retirer le nombre de bombe du groupe a au groupe b
+                    }
+                    else if (verif != 0)
+                    {
+                        repeat = 1;
+
+                        int maxBombs = max(a.nbrBombs, b.nbrBombs);
+                        int minBombs = min(a.nbrBombs, b.nbrBombs);
+                        int nbrBombs;
+                        if (maxBombs == a.nbrBombs)
+                        {
+                            nbrBombs = maxBombs -b.length +verif;
+                        }
+                        else
+                        {
+							nbrBombs = maxBombs -a.length +verif;
+						}
+                        // créer un groupe avec les coordonnée de crossGroup et le nombre de bombe nbrBombs
+
+					}
+                }
+            }
+        }
+    }
+}
+
+int IaPlay(Ia* ia)
+{
+    for (int i = 0; i < ia->Groups->length; i++)
+    {
+        if (ia->Groups->elm[i].nbrBombs == ia->Groups->elm[i].length)
+        {
+			// Flag les coordonnée du groupe
+		}
+        else if (ia->Groups->elm[i].nbrBombs == 0)
+        {
+			// Reveal les coordonnée du groupe
+		}
+	}
 }
