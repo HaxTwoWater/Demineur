@@ -46,7 +46,7 @@
 //    int startY = max(0, CoordinateY - 1);
 //    int endY = min(Table->sizeY, CoordinateY + 2);
 //
-//    // Créer un groupe de coordonée
+//    // CrÃ©er un groupe de coordonÃ©e
 //    for (int a = startX; a < endX; a++)
 //    {
 //        for (int b = startY; b < endY; b++)
@@ -54,7 +54,7 @@
 //            int index = convertCoordToLen(a, b, Table->sizeX);
 //            if (Table->elm[index].val->reveal == 0)
 //            {
-//                // Ajouter la coordoné dans le groupe de coordonée
+//                // Ajouter la coordonÃ© dans le groupe de coordonÃ©e
 //            }
 //        }
 //    }
@@ -101,14 +101,14 @@
 //                            {
 //								verif++;
 //                                l = b.length;
-//                                // Ajouter la coordoné dans crossGroup
+//                                // Ajouter la coordonÃ© dans crossGroup
 //							}
 //						}
 //					}
 //
 //                    if (verif == a.length)
 //                    {
-//						// retirer les coordonnée du groupe a dans le groupe b
+//						// retirer les coordonnÃ©e du groupe a dans le groupe b
 //                        // retirer le nombre de bombe du groupe a au groupe b
 //                    }
 //                    else if (verif != 0)
@@ -126,7 +126,7 @@
 //                        {
 //							nbrBombs = maxBombs -a.length +verif;
 //						}
-//                        // créer un groupe avec les coordonnée de crossGroup et le nombre de bombe nbrBombs
+//                        // crÃ©er un groupe avec les coordonnÃ©e de crossGroup et le nombre de bombe nbrBombs
 //
 //					}
 //                }
@@ -141,11 +141,11 @@
 //    {
 //        if (ia->Groups->elm[i].nbrBombs == ia->Groups->elm[i].length)
 //        {
-//			// Flag les coordonnée du groupe
+//			// Flag les coordonnÃ©e du groupe
 //		}
 //        else if (ia->Groups->elm[i].nbrBombs == 0)
 //        {
-//			// Reveal les coordonnée du groupe
+//			// Reveal les coordonnÃ©e du groupe
 //		}
 //	}
 //}
