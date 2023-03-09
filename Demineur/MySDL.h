@@ -5,6 +5,8 @@ typedef struct Cell
 {
 	int num;
 	int reveal;
+	int bomb;
+	int flag;
 } Cell;
 
 void InitDemineurWindow();

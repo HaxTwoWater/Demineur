@@ -17,12 +17,14 @@ void InitDemineurWindow() {
     for (int i = 0; i < 25; i++)
     {
         ((Cell*)cell->elm)[i].num = rand() % 9;
-        ((Cell*)cell->elm)[i].reveal = rand() % 2;
+        ((Cell*)cell->elm)[i].reveal = 0;
+        ((Cell*)cell->elm)[i].flag = 0;
+        ((Cell*)cell->elm)[i].bomb = rand() % 2;
     }
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
     SDL_Window* window;
 
-    window = SDL_CreateWindow("Hello SDL", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow("Démineur", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
     SDL_Rect carreFlag, rectFlag;
     int x = 100;
@@ -52,38 +54,44 @@ void InitDemineurWindow() {
 
     if (window == NULL) { printf("%s\n", SDL_GetError()); exit(-1); }
     //dessiner un composant 
-    SDL_Event windowEvent;
+    SDL_Event e;
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+    int play = 1;
+    while (play) {
 
-    while (1) {
-        //
-        if (SDL_PollEvent(&windowEvent)) {
-            if (windowEvent.type == SDL_QUIT) { break; }
-        }
-        
-        //SDL_Renderer
         SDL_SetRenderDrawColor(renderer, 211, 211, 211, 127);
         SDL_RenderClear(renderer);
 
-        /*
-        //Case placement
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        SDL_RenderFillRect(renderer, &caseSurr);
-        SDL_SetRenderDrawColor(renderer, 220, 240, 49, 255);
-        SDL_RenderFillRect(renderer, &caseFill);
+        while (SDL_PollEvent(&e) && play) {
 
-        //Flag
-        SDL_SetRenderDrawColor(renderer, 169, 169, 169, 255);
-        SDL_RenderFillRect(renderer, &rectFlag);
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_RenderFillRect(renderer, &carreFlag);
-        */
+            Drawn(cell, renderer);
+            switch (e.type) {
+            case SDL_MOUSEBUTTONDOWN:
+                if (e.mouse.state == SDL_RELEASED) 
+                {
+                    int i = e.mouse.x / 30;
+                    int j = e.mouse.y / 30;
+                    if (e.mouse.button == SDL_BUTTON_LEFT)
+                    {
+                        ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal = 1;
+                    }
+                    else if (e.mouse.button == SDL_BUTTON_RIGHT && !((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal)
+                    {
+                        ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].flag = 1;
+                    }
+                }
+                break;
+            case SDL_QUIT:
+                play = 0;
+                break;
 
-        Drawn(cell, renderer);
+            default:
+                break;
+            }
 
+        }
     }
-    //SDL_Delay(5000);
     SDL_DestroyRenderer(renderer);
 
     SDL_DestroyWindow(window);
@@ -148,10 +156,10 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                 }
             }
             
-            SDL_Texture* monImage = SDL_CreateTextureFromSurface(rend, image);
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(rend, image);
             SDL_FreeSurface(image);
             SDL_Rect imgPos = { i * 30, j * 30, 30, 30 };
-            SDL_RenderCopy(rend, monImage, NULL, &imgPos);
+            SDL_RenderCopy(rend, texture, NULL, &imgPos);
         }
     }
     SDL_RenderPresent(rend);
