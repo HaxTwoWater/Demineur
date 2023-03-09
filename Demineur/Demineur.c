@@ -174,6 +174,7 @@ DynamicArray* Create(SDL_Renderer** renderer, SDL_Window** window)
         ((Case*)newDynamic->elm)[i].content = 0;
         ((Case*)newDynamic->elm)[i].flaged = 0;
         ((Case*)newDynamic->elm)[i].reveal = 0;
+        newDynamic->generated = 0;
     }
 
     int numBombs = newDynamic->sizeX * newDynamic->sizeY;
@@ -245,7 +246,7 @@ void Generate(DynamicArray* newDynamic, int playPos)
     {
         for (int a = eX; a > sX; a++)
         {
-            DeleteAt(bomb, convertCoordToLen(a, b, newDynamic->sizeX));
+            DeleteAt((Case*)bomb->elm, convertCoordToLen(a, b, newDynamic->sizeX));
             a -= 2;
         }
         b -= 2;
