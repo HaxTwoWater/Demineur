@@ -111,56 +111,50 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
             printf("%d\n", *((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize));
             printf("\n");
             */
-            if (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal) 
-            {
-                image = IMG_Load("src/revealed.png");
-            }
-            else 
-            {
-                //(((Cell*)(GetAt(cell, convertCoordToLen(i, j, cell->sizeX))))->num)
-                SDL_Texture* myImage = SDL_CreateTextureFromSurface(rend, IMG_Load("src/revealed.png"));
-                SDL_FreeSurface(IMG_Load("src/revealed.png"));
-                SDL_Rect myImgPos = { i * 30, j * 30, 30, 30 };
-                SDL_RenderCopy(rend, myImage, NULL, &myImgPos);
 
-                switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num)
+            //(((Cell*)(GetAt(cell, convertCoordToLen(i, j, cell->sizeX))))->num)
+            SDL_Texture* myImage = SDL_CreateTextureFromSurface(rend, IMG_Load("src/revealed.png"));
+            SDL_FreeSurface(IMG_Load("src/revealed.png"));
+            SDL_Rect myImgPos = { i * 30, j * 30, 30, 30 };
+            SDL_RenderCopy(rend, myImage, NULL, &myImgPos);
+
+            switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num)
+            {
+            case 1:
+                image = IMG_Load("src/1.png");
+                break;
+            case 2:
+                image = IMG_Load("src/2.png");
+                break;
+            case 3:
+                image = IMG_Load("src/3.png");
+                break;
+            case 4:
+                image = IMG_Load("src/4.png");
+                break;
+            case 5:
+                image = IMG_Load("src/5.png");
+                break;
+            case 6:
+                image = IMG_Load("src/6.png");
+                break;
+            case 7:
+                image = IMG_Load("src/7.png");
+                break;
+            case 8:
+                image = IMG_Load("src/8.png");
+                break;
+            default:
+                switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal)
                 {
-                case 1:
-                    image = IMG_Load("src/1.png");
-                    break;
-                case 2:
-                    image = IMG_Load("src/2.png");
-                    break;
-                case 3:
-                    image = IMG_Load("src/3.png");
-                    break;
-                case 4:
-                    image = IMG_Load("src/4.png");
-                    break;
-                case 5:
-                    image = IMG_Load("src/5.png");
-                    break;
-                case 6:
-                    image = IMG_Load("src/6.png");
-                    break;
-                case 7:
-                    image = IMG_Load("src/7.png");
-                    break;
-                case 8:
-                    image = IMG_Load("src/8.png");
-                    break;
-                default:
-                    switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal)
-                    {
-                        case 0:
-							image = IMG_Load("src/empty.png");
-							break;
-                        default:
-                            image = NULL;
-                            break;
-                    }
-                    break;
+                    case 0:
+						image = IMG_Load("src/empty.png");
+						break;
+                    default:
+                        image = NULL;
+                        break;
                 }
+                break;
             }
             
             if (image != NULL)
