@@ -58,10 +58,10 @@ void Generate(DynamicArray* newDynamic, int playPos);
 
 void app()
 {
-    SDL_Renderer* renderer;
-    SDL_Window* window;
+    SDL_Renderer* renderer = NULL;
+    SDL_Window* window = NULL;
     SDL_Event e;
-    DynamicArray* dynamic = InitDynamicArray(5, 5, 0, sizeof(Case));
+    DynamicArray* dynamic = Create(renderer, window);
 
     int finish = 1;
     while (finish)
@@ -528,9 +528,7 @@ void printTable(DynamicArray* dynamic)
 
 int main()
 {
-    //app();
-
-    InitDemineurWindow();
+    app();
 
     return 0;
 }
