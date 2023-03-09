@@ -462,6 +462,5 @@ void printTable(DynamicArray* dynamic)
 int main()
 {
     app();
-
     return 0;
 }
