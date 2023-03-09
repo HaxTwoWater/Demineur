@@ -40,7 +40,7 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
         for (int j = 0; j < cell->sizeY; j++)
         {
             
-            switch (((Case*)cell->elm)->reveal)
+            switch (((Case*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal)
             {
             case 0:
                 image1 = IMG_Load("src/empty.png");
@@ -49,7 +49,7 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                 SDL_Rect myImgPos11 = { i * 30, j * 30, 30, 30 };
                 SDL_RenderCopy(rend, myImage11, NULL, &myImgPos11);
 
-                switch (((Case*)cell->elm)->flaged)
+                switch (((Case*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].flaged)
                 {
                 case 1:
                     image = IMG_Load("src/flag.png");
@@ -75,7 +75,7 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                 SDL_Rect myImgPos12 = { i * 30, j * 30, 30, 30 };
                 SDL_RenderCopy(rend, myImage12, NULL, &myImgPos12);
 
-                switch (((Case*)cell->elm)->content)
+                switch (((Case*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].content)
                 {
                 case -1:
                     image = IMG_Load("src/bombe(1).png");
