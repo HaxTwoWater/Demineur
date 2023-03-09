@@ -39,7 +39,7 @@ void DeleteAt(DynamicArray *dynamic, int index)
 {
     for (int i = index; i < dynamic->length - 1; i++)
     {
-        dynamic->elm[i] = dynamic->elm[i + 1];
+        dynamic->elm[i * dynamic->elmSize] = dynamic->elm[(i + 1) * dynamic->elmSize];
     }
     dynamic->length--;
 }
