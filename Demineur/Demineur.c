@@ -13,6 +13,7 @@ void Clear() {
         printf("\n\n\n\n\n\n\n\n\n\n");
 }
 
+#pragma region Game
 int largInt(int a)
 {
     int larg = 1;
@@ -41,24 +42,93 @@ void revealCase(DynamicArray* dynamic, int posX, int posY);
 void printTable(DynamicArray* dynamic);
 void checkEndGame(int* finish, DynamicArray* dynamic);
 DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic);
-DynamicArray* Create();
+DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window);
 void Generate(DynamicArray* newDynamic, int playPos);
 
 void app()
 {
-    DynamicArray* dynamic = Create();
+    SDL_Renderer* renderer;
+    SDL_Window* window;
+    SDL_Event e;
+    DynamicArray* dynamic = Create(renderer, window);
 
     int finish = 1;
     while (finish)
     {
         printTable(dynamic);
+        Drawn(dynamic, renderer);
 
         char play = ' ';
         int exitWhile = 1;
         int content;
         while (exitWhile)
         {
-            int i = _getch();
+            SDL_SetRenderDrawColor(renderer, 211, 211, 211, 127);
+            SDL_RenderClear(renderer);
+
+            while (SDL_PollEvent(&e) && play) {
+                switch (e.type) {
+                case SDL_MOUSEBUTTONDOWN:
+                    int i = e.motion.x / 30;
+                    int j = e.motion.y / 30;
+                    if (e.button.button == SDL_BUTTON_LEFT)
+                    {
+                        // code for reveal (left click)
+                        content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
+                        selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
+                        if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 1)
+                        {
+                            exitWhile = 0;
+                            if (content == -1)
+                            {
+                                dynamic = endGame(0, &finish, dynamic);
+                            }
+                            else
+                            {
+                                revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+                                checkEndGame(&finish, dynamic);
+                            }
+                        }
+                        else if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 0)
+                        {
+                            exitWhile = 0;
+                            Generate(dynamic, convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX));
+                            revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+                            dynamic->generated = 1;
+                        }
+                    }
+                    else if (e.button.button == SDL_BUTTON_RIGHT)
+                    {
+                        // code for flag (right click)
+                        content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
+                        selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
+                        if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 1)
+                        {
+                            exitWhile = 0;
+                            if (content == -1)
+                            {
+                                dynamic->bombs = max(dynamic->bombs - 1, 0);
+                                dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->flaged = 1;
+                                checkEndGame(&finish, dynamic);
+                            }
+                            else
+                            {
+                                dynamic = endGame(0, &finish, dynamic);
+                            }
+                        }
+                    }
+                    break;
+                case SDL_QUIT:
+                    play = 0;
+                    break;
+
+                default:
+                    break;
+                }
+
+            }
+
+            /*int i = _getch();
 
             Case selectedCase;
             switch (i)
@@ -122,19 +192,19 @@ void app()
                 }
                 else if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 0)
                 {
-					exitWhile = 0;
-					Generate(dynamic, convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX));
-					revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+                    exitWhile = 0;
+                    Generate(dynamic, convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX));
+                    revealCase(dynamic, dynamic->selectX, dynamic->selectY);
                     dynamic->generated = 1;
-				}
+                }
                 break;
-            }
+            }*/
         }
         Clear();
     }
 }
 
-DynamicArray* Create()
+DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window)
 {
     int sizeX = -1;
     int sizeY = -1;
@@ -212,10 +282,13 @@ DynamicArray* Create()
             c->flaged = oEmptyCase.flaged;
         }
     }
+
+    InitDemineurWindow(renderer, window, sizeX, sizeY);
+
     return newDynamic;
 }
 
-void Generate(DynamicArray * newDynamic, int playPos)
+void Generate(DynamicArray* newDynamic, int playPos)
 {
     int value = 0;
     int tryPos = 0;
@@ -271,7 +344,7 @@ void Generate(DynamicArray * newDynamic, int playPos)
     Free(bomb);
 }
 
-void checkEndGame(int* finish, DynamicArray* dynamic)
+void checkEndGame(int* finish, DynamicArray* dynamic, SDL_Renderer* renderer, SDL_Window* window)
 {
     int ending = 1;
     for (int i = 0; i < dynamic->sizeX * dynamic->sizeY; i++)
@@ -292,7 +365,7 @@ void checkEndGame(int* finish, DynamicArray* dynamic)
     }
 }
 
-DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic)
+DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic, SDL_Renderer* renderer, SDL_Window* window)
 {
     Clear();
     for (int j = 0; j < dynamic->sizeX * dynamic->sizeY; j++)
@@ -323,12 +396,14 @@ DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic)
         // Le joueur ne souhaite pas rejouer (110 = 'n')
         *finish = 0;
         Free(dynamic);
+        DestroyDemineurWindow(renderer, window);
         return NULL;
         break;
     case 121:
         // Le joueur souhaite rejouer (121 = 'y')
         Free(dynamic);
-        return Create();
+        DestroyDemineurWindow(renderer, window);
+        return Create(renderer, window);
         break;
     }
 }
@@ -438,6 +513,7 @@ void printTable(DynamicArray* dynamic)
     }
     printf("\n\n");
 }
+#pragma endregion
 
 int main()
 {

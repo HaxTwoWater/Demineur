@@ -1,15 +1,15 @@
+#include "MySDL.h"
 #include <SDL.h>
+#include <SDL_image.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "MySDL.h"
-#include <SDL_image.h>
-#include "DynamicArray.h"
 #include <time.h>
+#include "DynamicArray.h"
 
 const int POSITION_X = 800;
 const int POSITION_Y = 300;
 
-void InitDemineurWindow(SDL_Renderer* renderer) {
+void InitDemineurWindow(SDL_Renderer* renderer, SDL_Window* window, int sizeX, int sizeY) {
     srand(time(NULL));
     Cell c[25];
     DynamicArray* cell = InitDynamicArray(5, 5, 0, c, sizeof(Cell));
@@ -20,58 +20,22 @@ void InitDemineurWindow(SDL_Renderer* renderer) {
         ((Cell*)cell->elm)[i].flag = 0;
     }
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
-    SDL_Window* window;
 
-    int WIDTH = 30 * 5;
-    int HEIGHT = 30 * 5 + 0;
+    int WIDTH = 30 * sizeX;
+    int HEIGHT = 30 * sizeY + 0;
 
     window = SDL_CreateWindow("Demineur", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
     if (window == NULL) { printf("%s\n", SDL_GetError()); exit(-1); }
 
-    SDL_Event e;
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-    int play = 1;
-    while (play) {
-
-        SDL_SetRenderDrawColor(renderer, 211, 211, 211, 127);
-        SDL_RenderClear(renderer);
-
-        Drawn(cell, renderer);
-        while (SDL_PollEvent(&e) && play) {
-            switch (e.type) {
-            case SDL_MOUSEBUTTONDOWN:
-                int i = e.motion.x / 30;
-                int j = e.motion.y / 30;
-                if (e.button.button == SDL_BUTTON_LEFT)
-                {
-                    ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal = 1;
-                }
-                else if (e.button.button == SDL_BUTTON_RIGHT && !((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal)
-                {
-                    ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].flag = 1;
-                }
-                break;
-            case SDL_QUIT:
-                play = 0;
-                break;
-
-            default:
-                break;
-            }
-
-        }
-    }
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
-void DestroyDemineurWindow(renderer) {
+void DestroyDemineurWindow(SDL_Renderer* renderer, SDL_Window* window) {
     SDL_DestroyRenderer(renderer);
 
     SDL_DestroyWindow(window);
     SDL_Quit();
-
-    return;
 }
 
 void Drawn(DynamicArray* cell, SDL_Renderer* rend)
@@ -82,18 +46,6 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
     {
         for (int j = 0; j < cell->sizeY; j++)
         {
-            /*
-            printf("%d\n", ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX) * cell->elmSize]);
-            printf("%d\n", ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX) * cell->elmSize].num);
-            printf("%d\n", ((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize)));
-            printf("%d\n", ((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize));
-            printf("%d\n", ((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num);
-            printf("%d\n", ((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal);
-            printf("%d\n", *((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize));
-            printf("\n");
-            */
-
-
             switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal)
             {
             case 0:
@@ -173,8 +125,6 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
 
                 break;
             }
-
-            //(((Cell*)(GetAt(cell, convertCoordToLen(i, j, cell->sizeX))))->num)
         }
     }
     SDL_RenderPresent(rend);
