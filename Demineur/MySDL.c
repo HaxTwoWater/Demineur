@@ -9,13 +9,13 @@
 const int POSITION_X = 800;
 const int POSITION_Y = 300;
 
-void InitDemineurWindow() {
+void InitDemineurWindow(SDL_Renderer* renderer) {
     srand(time(NULL));
     Cell c[25];
     DynamicArray* cell = InitDynamicArray(5, 5, 0, c, sizeof(Cell));
     for (int i = 0; i < 25; i++)
     {
-        ((Cell*)cell->elm)[i].num = rand() % 10 -1;
+        ((Cell*)cell->elm)[i].num = rand() % 10 - 1;
         ((Cell*)cell->elm)[i].reveal = 0;
         ((Cell*)cell->elm)[i].flag = 0;
     }
@@ -23,12 +23,12 @@ void InitDemineurWindow() {
     SDL_Window* window;
 
     int WIDTH = 30 * 5;
-    int HEIGHT = 30 * 5 +0;
+    int HEIGHT = 30 * 5 + 0;
 
     window = SDL_CreateWindow("Demineur", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
     if (window == NULL) { printf("%s\n", SDL_GetError()); exit(-1); }
-    
+
     SDL_Event e;
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
@@ -42,16 +42,16 @@ void InitDemineurWindow() {
         while (SDL_PollEvent(&e) && play) {
             switch (e.type) {
             case SDL_MOUSEBUTTONDOWN:
-                    int i = e.motion.x / 30;
-                    int j = e.motion.y / 30;
-                    if (e.button.button == SDL_BUTTON_LEFT)
-                    {
-                        ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal = 1;
-                    }
-                    else if (e.button.button == SDL_BUTTON_RIGHT && !((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal)
-                    {
-                        ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].flag = 1;
-                    }
+                int i = e.motion.x / 30;
+                int j = e.motion.y / 30;
+                if (e.button.button == SDL_BUTTON_LEFT)
+                {
+                    ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal = 1;
+                }
+                else if (e.button.button == SDL_BUTTON_RIGHT && !((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal)
+                {
+                    ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].flag = 1;
+                }
                 break;
             case SDL_QUIT:
                 play = 0;
@@ -63,6 +63,9 @@ void InitDemineurWindow() {
 
         }
     }
+}
+
+void DestroyDemineurWindow(renderer) {
     SDL_DestroyRenderer(renderer);
 
     SDL_DestroyWindow(window);

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <windows.h>
 #include "MySDL.h"
-/*
+
 void Clear() {
     for (int n = 0; n < 10; n++)
         printf("\n\n\n\n\n\n\n\n\n\n");
@@ -438,7 +438,7 @@ void printTable(DynamicArray* dynamic)
     }
     printf("\n\n");
 }
-*/
+
 int main()
 {
     //app();
