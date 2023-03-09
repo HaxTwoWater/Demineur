@@ -22,7 +22,6 @@ void InitDemineurWindow(SDL_Renderer** renderer, SDL_Window** window, int sizeX,
     if (window == NULL) { printf("%s\n", SDL_GetError()); exit(-1); }
 
     *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
-    printf("init\n");
 }
 
 void DestroyDemineurWindow(SDL_Renderer* renderer, SDL_Window* window) {
@@ -49,7 +48,6 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                 SDL_FreeSurface(image1);
                 SDL_Rect myImgPos11 = { i * 30, j * 30, 30, 30 };
                 SDL_RenderCopy(rend, myImage11, NULL, &myImgPos11);
-                printf("OK\n");
 
                 switch (((Case*)cell->elm)->flaged)
                 {
@@ -76,7 +74,6 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                 SDL_FreeSurface(image1);
                 SDL_Rect myImgPos12 = { i * 30, j * 30, 30, 30 };
                 SDL_RenderCopy(rend, myImage12, NULL, &myImgPos12);
-                printf("KO\n");
 
                 switch (((Case*)cell->elm)->content)
                 {
