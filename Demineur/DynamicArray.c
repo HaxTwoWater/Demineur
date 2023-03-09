@@ -30,21 +30,18 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, int elmSize)
     dynamic->seed = seed;
     dynamic->bombs = 0;
     dynamic->generated = 0;
+    dynamic->capacity = l;
     return dynamic;
 }
 
 //Marche seulement en 1 dimension
-DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
+void DeleteAt(DynamicArray *dynamic, int index)
 {
-    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed, dynamic->elmSize);
-    int offset = 0;
-    for (int i = 0; i < newDynamic->length; i++)
+    for (int i = index; i < dynamic->length - 1; i++)
     {
-        if (i == index) offset = 1;
-        newDynamic->elm[i] = dynamic->elm[i + offset];
+        dynamic->elm[i] = dynamic->elm[i + 1];
     }
-    Free(dynamic);
-    return newDynamic;
+    dynamic->length--;
 }
 
 //Marche seulement en 1 dimension

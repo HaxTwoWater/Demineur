@@ -245,7 +245,7 @@ void Generate(DynamicArray* newDynamic, int playPos)
     {
         for (int a = eX; a > sX; a++)
         {
-            bomb = DeleteAt(bomb, convertCoordToLen(a, b, newDynamic->sizeX));
+            DeleteAt(bomb, convertCoordToLen(a, b, newDynamic->sizeX));
             a -= 2;
         }
         b -= 2;
@@ -256,7 +256,7 @@ void Generate(DynamicArray* newDynamic, int playPos)
         int ri = rand() % p;
         int r = convertCoordToLen(((Case*)bomb->elm)[ri].X, ((Case*)bomb->elm)[ri].Y, bomb->sizeX);
         ((Case*)newDynamic->elm)[r].content = -1;
-        bomb = DeleteAt(bomb, ri);
+        DeleteAt(bomb, ri);
 
         int rPos[2];
         convertLenToCoord(r, newDynamic->sizeX, rPos);
