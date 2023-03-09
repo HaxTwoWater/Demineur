@@ -1,21 +1,6 @@
 #ifndef DYNAMIC_ARRAY
 #define DYNAMIC_ARRAY
 
-typedef struct Case
-{
-    int content;
-    int reveal;
-    int flaged;
-}Case;
-
-typedef struct ArrayElm ArrayElm;
-struct ArrayElm
-{
-    int X;
-    int Y;
-    Case* val;
-};
-
 typedef struct DynamicArray
 {
     void* elm;

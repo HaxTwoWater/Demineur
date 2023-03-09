@@ -7,6 +7,16 @@
 #include <stdlib.h>
 #include <windows.h>
 #include "MySDL.h"
+#include <SDL.h>
+
+typedef struct Case
+{
+    int content;
+    int reveal;
+    int flaged;
+    int X;
+    int Y;
+}Case;
 
 void Clear() {
     for (int n = 0; n < 10; n++)
@@ -50,7 +60,7 @@ void app()
     SDL_Renderer* renderer;
     SDL_Window* window;
     SDL_Event e;
-    DynamicArray* dynamic = Create(renderer, window);
+    DynamicArray* dynamic = InitDynamicArray(5, 5, 0, sizeof(Case));
 
     int finish = 1;
     while (finish)
@@ -74,19 +84,19 @@ void app()
                     if (e.button.button == SDL_BUTTON_LEFT)
                     {
                         // code for reveal (left click)
-                        content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
-                        selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
+                        content = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].content;
+                        Case selectedCase = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)];
                         if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 1)
                         {
                             exitWhile = 0;
                             if (content == -1)
                             {
-                                dynamic = endGame(0, &finish, dynamic);
+                                dynamic = endGame(0, &finish, dynamic, renderer, window);
                             }
                             else
                             {
                                 revealCase(dynamic, dynamic->selectX, dynamic->selectY);
-                                checkEndGame(&finish, dynamic);
+                                checkEndGame(&finish, dynamic, renderer, window);
                             }
                         }
                         else if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 0)
@@ -100,20 +110,20 @@ void app()
                     else if (e.button.button == SDL_BUTTON_RIGHT)
                     {
                         // code for flag (right click)
-                        content = dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->content;
-                        selectedCase = *dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val;
+                        content = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].content;
+                        Case selectedCase = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)];
                         if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 1)
                         {
                             exitWhile = 0;
                             if (content == -1)
                             {
                                 dynamic->bombs = max(dynamic->bombs - 1, 0);
-                                dynamic->elm[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].val->flaged = 1;
-                                checkEndGame(&finish, dynamic);
+                                ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].flaged = 1;
+                                checkEndGame(&finish, dynamic, renderer, window);
                             }
                             else
                             {
-                                dynamic = endGame(0, &finish, dynamic);
+                                dynamic = endGame(0, &finish, dynamic, renderer, window);
                             }
                         }
                     }
@@ -241,7 +251,7 @@ DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window)
     }
     srand(seed);
 
-    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY, seed);
+    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY, seed, sizeof(Case));
 
     int numBombs = newDynamic->sizeX * newDynamic->sizeY;
     switch (difficulty)
@@ -276,7 +286,7 @@ DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window)
     {
         for (int b = 0; b < newDynamic->sizeY; b++)
         {
-            Case* c = newDynamic->elm[convertCoordToLen(a, b, newDynamic->sizeX)].val;
+            Case* c = &((Case*)newDynamic->elm)[convertCoordToLen(a, b, newDynamic->sizeX)];
             c->content = oEmptyCase.content;
             c->reveal = oEmptyCase.reveal;
             c->flaged = oEmptyCase.flaged;
@@ -297,7 +307,7 @@ void Generate(DynamicArray* newDynamic, int playPos)
     int sizeX = newDynamic->sizeX;
     int sizeY = newDynamic->sizeY;
     int numBombs = newDynamic->bombs;
-    DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1, 0);
+    DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1, 0, sizeof(Case));
     int Pos[2] = { 0, 0 };
     convertLenToCoord(playPos, sizeX, Pos);
     int sX = max(-1, Pos[0] - 2);
@@ -318,8 +328,8 @@ void Generate(DynamicArray* newDynamic, int playPos)
     {
         int p = bomb->length;
         int ri = rand() % p;
-        int r = convertCoordToLen(bomb->elm[ri].X, bomb->elm[ri].Y, bomb->sizeX);
-        newDynamic->elm[r].val->content = -1;
+        int r = convertCoordToLen(((Case*)bomb->elm)[ri].X, ((Case*)bomb->elm)[ri].Y, bomb->sizeX);
+        ((Case*)newDynamic->elm)[r].content = -1;
         bomb = DeleteAt(bomb, ri);
 
         int rPos[2];
@@ -334,9 +344,9 @@ void Generate(DynamicArray* newDynamic, int playPos)
             for (int b = startY; b < endY; b++)
             {
                 int len = convertCoordToLen(a, b, newDynamic->sizeX);
-                if (newDynamic->elm[len].val->content != -1)
+                if (((Case*)newDynamic->elm)[len].content != -1)
                 {
-                    newDynamic->elm[len].val->content += 1;
+                    ((Case*)newDynamic->elm)[len].content += 1;
                 }
             }
         }
@@ -350,18 +360,18 @@ void checkEndGame(int* finish, DynamicArray* dynamic, SDL_Renderer* renderer, SD
     for (int i = 0; i < dynamic->sizeX * dynamic->sizeY; i++)
     {
         int index = convertCoordToLen(i, 0, dynamic->sizeX);
-        if (dynamic->elm[index].val->content == -1 && dynamic->elm[index].val->flaged == 0)
+        if (((Case*)dynamic->elm)[index].content == -1 && ((Case*)dynamic->elm)[index].flaged == 0)
         {
             ending = 0;
         }
-        else if (dynamic->elm[index].val->content == 0 && dynamic->elm[index].val->reveal == 0)
+        else if (((Case*)dynamic->elm)[index].content == 0 && ((Case*)dynamic->elm)[index].reveal == 0)
         {
             ending = 0;
         }
     }
     if (ending == 1)
     {
-        dynamic = endGame(1, finish, dynamic);
+        dynamic = endGame(1, finish, dynamic, renderer, window);
     }
 }
 
@@ -370,7 +380,7 @@ DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic, SDL_Ren
     Clear();
     for (int j = 0; j < dynamic->sizeX * dynamic->sizeY; j++)
     {
-        dynamic->elm[convertCoordToLen(j, 0, dynamic->sizeX)].val->reveal = 1;
+        ((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].reveal = 1;
     }
     printTable(dynamic);
 
@@ -416,13 +426,13 @@ void revealCase(DynamicArray* dynamic, int posX, int posY)
     int endY = min(dynamic->sizeY, posY + 2);
 
     int index = convertCoordToLen(posX, posY, dynamic->sizeX);
-    dynamic->elm[index].val->reveal = 1;
-    if (dynamic->elm[index].val->content == 0) {
+    ((Case*)dynamic->elm)[index].reveal = 1;
+    if (((Case*)dynamic->elm)[index].content == 0) {
         for (int a = startX; a < endX; a++)
         {
             for (int b = startY; b < endY; b++)
             {
-                if (dynamic->elm[convertCoordToLen(a, b, dynamic->sizeX)].val->reveal == 0)
+                if (((Case*)dynamic->elm)[convertCoordToLen(a, b, dynamic->sizeX)].reveal == 0)
                 {
                     revealCase(dynamic, a, b);
                 }
@@ -464,17 +474,17 @@ void printTable(DynamicArray* dynamic)
             {
                 background = 1;
             }
-            if (dynamic->elm[index].val->flaged == 1)
+            if (((Case*)dynamic->elm)[index].flaged == 1)
             {
                 Color(10, background);
                 printf("F");
             }
-            else if (dynamic->elm[index].val->reveal == 0)
+            else if (((Case*)dynamic->elm)[index].reveal == 0)
             {
                 Color(15, background);
                 printf("?");
             }
-            else if (dynamic->elm[index].val->content == -1)
+            else if (((Case*)dynamic->elm)[index].content == -1)
             {
                 Color(4, background);
                 printf("*");
@@ -482,11 +492,11 @@ void printTable(DynamicArray* dynamic)
             else
             {
                 Color(13, background);
-                if (dynamic->elm[index].val->content == 0)
+                if (((Case*)dynamic->elm)[index].content == 0)
                 {
                     Color(8, background);
                 }
-                printf("%d", dynamic->elm[index].val->content);
+                printf("%d", ((Case*)dynamic->elm)[index].content);
             }
             repeatChar(' ', larg - 1);
             Color(15, 0);
