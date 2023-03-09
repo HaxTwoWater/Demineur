@@ -6,12 +6,11 @@
 #include "DynamicArray.h"
 #include <time.h>
 
-const int WIDTH = 320;
-const int HEIGHT = 480;
 const int POSITION_X = 800;
 const int POSITION_Y = 300;
 
 void InitDemineurWindow() {
+    srand(time(NULL));
     Cell c[25];
     DynamicArray* cell = InitDynamicArray(5, 5, 0, c, sizeof(Cell));
     for (int i = 0; i < 25; i++)
@@ -21,6 +20,9 @@ void InitDemineurWindow() {
     }
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
     SDL_Window* window;
+
+    int WIDTH = 30 * 5;
+    int HEIGHT = 30 * 5 +0;
 
     window = SDL_CreateWindow("Hello SDL", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
@@ -116,6 +118,11 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
             else 
             {
                 //(((Cell*)(GetAt(cell, convertCoordToLen(i, j, cell->sizeX))))->num)
+                SDL_Texture* myImage = SDL_CreateTextureFromSurface(rend, IMG_Load("src/revealed.png"));
+                SDL_FreeSurface(IMG_Load("src/revealed.png"));
+                SDL_Rect myImgPos = { i * 30, j * 30, 30, 30 };
+                SDL_RenderCopy(rend, myImage, NULL, &myImgPos);
+
                 switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num)
                 {
                 case 1:
@@ -143,15 +150,26 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                     image = IMG_Load("src/8.png");
                     break;
                 default:
-                    image = IMG_Load("src/empty.png");
+                    switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal)
+                    {
+                        case 0:
+							image = IMG_Load("src/empty.png");
+							break;
+                        default:
+                            image = NULL;
+                            break;
+                    }
                     break;
                 }
             }
             
-            SDL_Texture* monImage = SDL_CreateTextureFromSurface(rend, image);
-            SDL_FreeSurface(image);
-            SDL_Rect imgPos = { i * 30, j * 30, 30, 30 };
-            SDL_RenderCopy(rend, monImage, NULL, &imgPos);
+            if (image != NULL)
+            {
+                SDL_Texture* monImage = SDL_CreateTextureFromSurface(rend, image);
+                SDL_FreeSurface(image);
+                SDL_Rect imgPos = { i * 30, j * 30, 30, 30 };
+                SDL_RenderCopy(rend, monImage, NULL, &imgPos);
+            }
         }
     }
     SDL_RenderPresent(rend);
