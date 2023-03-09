@@ -307,7 +307,11 @@ DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic, SDL_Ren
     Clear();
     for (int j = 0; j < dynamic->sizeX * dynamic->sizeY; j++)
     {
-        ((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].reveal = 1;
+        if (((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].flaged == 0 &&
+            ((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].content != -1)
+        {
+            ((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].reveal = 1;
+        }
     }
     printTable(dynamic);
 
