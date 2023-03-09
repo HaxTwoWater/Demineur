@@ -18,7 +18,6 @@ void InitDemineurWindow() {
         ((Cell*)cell->elm)[i].num = rand() % 10 -1;
         ((Cell*)cell->elm)[i].reveal = 0;
         ((Cell*)cell->elm)[i].flag = 0;
-        ((Cell*)cell->elm)[i].bomb = rand() % 2;
     }
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
     SDL_Window* window;
