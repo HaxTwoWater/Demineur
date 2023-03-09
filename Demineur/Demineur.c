@@ -246,7 +246,7 @@ void Generate(DynamicArray* newDynamic, int playPos)
     {
         for (int a = eX; a > sX; a++)
         {
-            DeleteAt((Case*)bomb->elm, convertCoordToLen(a, b, newDynamic->sizeX));
+            DeleteAt((Case*)bomb, convertCoordToLen(a, b, newDynamic->sizeX));
             a -= 2;
         }
         b -= 2;
