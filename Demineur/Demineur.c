@@ -43,13 +43,6 @@ void Color(int couleurDuTexte, int couleurDeFond)
 }
 
 //Game
-void revealCase(DynamicArray* dynamic, int posX, int posY);
-void printTable(DynamicArray* dynamic);
-void checkEndGame(int* finish, DynamicArray* dynamic);
-DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic);
-DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window);
-void Generate(DynamicArray* newDynamic, int playPos);
-
 void app()
 {
     SDL_Renderer* renderer = NULL;
@@ -57,6 +50,7 @@ void app()
     SDL_Event e;
     DynamicArray* dynamic = Create(renderer, window);
 
+    
     int finish = 1;
     while (finish)
     {
@@ -246,12 +240,13 @@ DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window)
     }
     srand(seed);
 
-    Case oEmptyCase;
-    oEmptyCase.content = 0;
-    oEmptyCase.reveal = 0;
-    oEmptyCase.flaged = 0;
-
-    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY, seed, &oEmptyCase, sizeof(Case));
+    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY, seed, sizeof(Case));
+    for (int i = 0; i < newDynamic->length; i++)
+    {
+        ((Case*)newDynamic->elm)[i].content = 0;
+        ((Case*)newDynamic->elm)[i].flaged = 0;
+        ((Case*)newDynamic->elm)[i].reveal = 0;
+    }
 
     int numBombs = newDynamic->sizeX * newDynamic->sizeY;
     switch (difficulty)

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "DynamicArray.h"
 #include "MySDL.h"
+#include "Demineur.h"
 
 void convertLenToCoord(int len, int sizeX, int coord[2])
 {
@@ -14,17 +15,13 @@ int convertCoordToLen(int x, int y, int sizeX)
     return (y * sizeX + x);
 }
 
-DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, void* base, int elmSize)
+DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, int elmSize)
 {
     int l = sizeX * sizeY;
     DynamicArray* dynamic = (DynamicArray*)malloc(sizeof(DynamicArray));
 
     dynamic->elmSize = elmSize;
     dynamic->elm = malloc(l * elmSize);
-    for (int i = 0; i < l; i++)
-    {
-        dynamic->elm[i] = base;
-    }
     dynamic->sizeX = sizeX;
     dynamic->sizeY = sizeY;
     dynamic->selectX = sizeX / 2;

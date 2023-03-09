@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Fichiers de ressources\src">
+      <UniqueIdentifier>{703ca8e7-a5ef-495f-99e0-f661c2cc9ae4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Demineur.c">
@@ -41,5 +44,43 @@
     <ClInclude Include="Demineur.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\revealed.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\2.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\3.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\4.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\5.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\6.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\7.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\8.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\bombe(1).png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\empty.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\flag.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
+    <Image Include="src\1.png">
+      <Filter>Fichiers de ressources\src</Filter>
+    </Image>
   </ItemGroup>
 </Project>

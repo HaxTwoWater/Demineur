@@ -150,6 +150,20 @@
     <ClInclude Include="ia.h" />
     <ClInclude Include="MySDL.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\1.png" />
+    <Image Include="src\2.png" />
+    <Image Include="src\3.png" />
+    <Image Include="src\4.png" />
+    <Image Include="src\5.png" />
+    <Image Include="src\6.png" />
+    <Image Include="src\7.png" />
+    <Image Include="src\8.png" />
+    <Image Include="src\bombe(1).png" />
+    <Image Include="src\empty.png" />
+    <Image Include="src\flag.png" />
+    <Image Include="src\revealed.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
