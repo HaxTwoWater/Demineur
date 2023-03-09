@@ -10,18 +10,18 @@
 const int POSITION_X = 800;
 const int POSITION_Y = 300;
 
-void InitDemineurWindow(SDL_Renderer* renderer, SDL_Window* window, int sizeX, int sizeY) {
+void InitDemineurWindow(SDL_Renderer** renderer, SDL_Window** window, int sizeX, int sizeY) {
 
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
 
     int WIDTH = 30 * sizeX;
     int HEIGHT = 30 * sizeY + 0;
 
-    window = SDL_CreateWindow("Demineur", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
+    *window = SDL_CreateWindow("Demineur", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
     if (window == NULL) { printf("%s\n", SDL_GetError()); exit(-1); }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     printf("init\n");
 }
 

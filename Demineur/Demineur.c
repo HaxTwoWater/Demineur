@@ -209,7 +209,7 @@ DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window)
         }
     }
 
-    InitDemineurWindow(renderer, window, sizeX, sizeY);
+    InitDemineurWindow(&renderer, &window, sizeX, sizeY);
 
     return newDynamic;
 }
