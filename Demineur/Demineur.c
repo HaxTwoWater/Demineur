@@ -71,8 +71,8 @@ void app()
                 if (e.button.button == SDL_BUTTON_LEFT)
                 {
                     // code for reveal (left click)
-                    content = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].content;
-                    Case selectedCase = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)];
+                    content = ((Case*)dynamic->elm)[convertCoordToLen(i, j, dynamic->sizeX)].content;
+                    Case selectedCase = ((Case*)dynamic->elm)[convertCoordToLen(i, j, dynamic->sizeX)];
                     if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 1)
                     {
                         exitWhile = 0;
@@ -82,30 +82,30 @@ void app()
                         }
                         else
                         {
-                            revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+                            revealCase(dynamic, i, j);
                             checkEndGame(&finish, dynamic, renderer, window);
                         }
                     }
                     else if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 0)
                     {
                         exitWhile = 0;
-                        Generate(dynamic, convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX));
-                        revealCase(dynamic, dynamic->selectX, dynamic->selectY);
+                        Generate(dynamic, convertCoordToLen(i, j, dynamic->sizeX));
+                        revealCase(dynamic, i, j);
                         dynamic->generated = 1;
                     }
                 }
                 else if (e.button.button == SDL_BUTTON_RIGHT)
                 {
                     // code for flag (right click)
-                    content = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].content;
-                    Case selectedCase = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)];
+                    content = ((Case*)dynamic->elm)[convertCoordToLen(i, j, dynamic->sizeX)].content;
+                    Case selectedCase = ((Case*)dynamic->elm)[convertCoordToLen(i, j, dynamic->sizeX)];
                     if (selectedCase.reveal == 0 && selectedCase.flaged == 0 && dynamic->generated == 1)
                     {
                         exitWhile = 0;
                         if (content == -1)
                         {
                             dynamic->bombs = max(dynamic->bombs - 1, 0);
-                            ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].flaged = 1;
+                            ((Case*)dynamic->elm)[convertCoordToLen(i, j, dynamic->sizeX)].flaged = 1;
                             checkEndGame(&finish, dynamic, renderer, window);
                         }
                         else
