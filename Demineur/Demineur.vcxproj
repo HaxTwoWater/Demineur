@@ -75,8 +75,8 @@
     <LibraryPath>C:\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\lib_C\SDL2-2.26.4\include</IncludePath>
-    <ReferencePath>D:\lib_C\SDL2-2.26.4\lib\x64;$(ReferencePath)</ReferencePath>
+    <IncludePath>C:\SDL2\include;$(IncludePath)</IncludePath>
+    <ReferencePath>C:\SDL2\lib\x64;$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
