@@ -37,11 +37,17 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, int elmSize)
 //Marche seulement en 1 dimension
 void DeleteAt(DynamicArray *dynamic, int index)
 {
-    for (int i = index; i < dynamic->length - 1; i++)
-    {
-        dynamic->elm[i * dynamic->elmSize] = dynamic->elm[(i + 1) * dynamic->elmSize];
-    }
     dynamic->length--;
+    for (int i = index; i < dynamic->length; i++)
+    {
+        printf("%d ", ((Case*)dynamic->elm)[i].X);
+
+        //dynamic->elm[i * dynamic->elmSize] = dynamic->elm[(i + 1) * dynamic->elmSize];
+        ((Case*)dynamic->elm)[i] = ((Case*)dynamic->elm)[(i + 1)];
+
+        printf("%d ", ((Case*)dynamic->elm)[i].X);
+        printf("%d \n", ((Case*)dynamic->elm)[i + 1].X);
+    }
 }
 
 //Marche seulement en 1 dimension
