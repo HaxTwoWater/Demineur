@@ -66,12 +66,10 @@ void app()
             Drawn(dynamic, renderer);
             switch (e.type) {
             case SDL_MOUSEBUTTONDOWN:
-                printf("SDL_MOUSEBUTTONDOWN");
                 int i = e.motion.x / 30;
                 int j = e.motion.y / 30;
                 if (e.button.button == SDL_BUTTON_LEFT)
                 {
-                    printf("SDL_BUTTON_LEFT");
                     // code for reveal (left click)
                     content = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)].content;
                     Case selectedCase = ((Case*)dynamic->elm)[convertCoordToLen(dynamic->selectX, dynamic->selectY, dynamic->sizeX)];
