@@ -15,6 +15,7 @@ int convertCoordToLen(int x, int y, int sizeX)
     return (y * sizeX + x);
 }
 
+//Initialisation d'une DynamiqueArray pour démineur
 DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, int elmSize)
 {
     int l = sizeX * sizeY;
@@ -40,16 +41,11 @@ void DeleteAt(DynamicArray *dynamic, int index)
     dynamic->length--;
     for (int i = index; i < dynamic->length; i++)
     {
-        printf("%d ", ((Case*)dynamic->elm)[i].X);
-
         //dynamic->elm[i * dynamic->elmSize] = dynamic->elm[(i + 1) * dynamic->elmSize];
         ((Case*)dynamic->elm)[i] = ((Case*)dynamic->elm)[(i + 1)];
-
-        printf("%d ", ((Case*)dynamic->elm)[i].X);
-        printf("%d \n", ((Case*)dynamic->elm)[i + 1].X);
     }
 }
-
+/*
 //Marche seulement en 1 dimension
 DynamicArray* AddTo(DynamicArray* dynamic, void* element)
 {
@@ -63,7 +59,9 @@ DynamicArray* AddTo(DynamicArray* dynamic, void* element)
     Free(dynamic);
     return newDynamic;
 }
+*/
 
+//Libère l'espace mémoire d'une DynamiqueArray
 void Free(DynamicArray* dynamic)
 {
     free(dynamic->elm);
