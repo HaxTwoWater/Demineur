@@ -1,12 +1,14 @@
-﻿#include <stdio.h>
+﻿//#include "ia.h"
+#include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <conio.h>
 #include "DynamicArray.h"
-//#include "ia.h"
 #include <stdlib.h>
 #include <windows.h>
 #include "MySDL.h"
+#include <SDL.h>
+#include <SDL_image.h>
 
 void Clear() {
     for (int n = 0; n < 10; n++)
