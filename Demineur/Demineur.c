@@ -66,8 +66,8 @@ void app()
             Drawn(dynamic, renderer);
             switch (e.type) {
             case SDL_MOUSEBUTTONDOWN:
-                int i = e.motion.x / 30;
-                int j = e.motion.y / 30;
+                int j = e.motion.x / 30;
+                int i = e.motion.y / 30;
                 if (e.button.button == SDL_BUTTON_LEFT)
                 {
                     // code for reveal (left click)
@@ -307,13 +307,15 @@ DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic, SDL_Ren
     Clear();
     for (int j = 0; j < dynamic->sizeX * dynamic->sizeY; j++)
     {
-        if (((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].flaged == 0 &&
+        if ((((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].flaged == 0 &&
+            ((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].content == -1) ||
             ((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].content != -1)
         {
             ((Case*)dynamic->elm)[convertCoordToLen(j, 0, dynamic->sizeX)].reveal = 1;
         }
     }
-    printTable(dynamic);
+    //printTable(dynamic);
+    Drawn(dynamic, renderer);
 
     char ask = 122;
     switch (condition)
