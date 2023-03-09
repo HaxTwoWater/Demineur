@@ -29,7 +29,7 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, int elmSize)
     dynamic->length = l;
     dynamic->seed = seed;
     dynamic->bombs = 0;
-    dynamic->generated = 0;
+    dynamic->generated = 1;
     dynamic->capacity = l;
     return dynamic;
 }
