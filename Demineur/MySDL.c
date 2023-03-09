@@ -33,6 +33,7 @@ void DestroyDemineurWindow(SDL_Renderer* renderer, SDL_Window* window) {
 
 void Drawn(DynamicArray* cell, SDL_Renderer* rend)
 {
+    srand(0);
     SDL_Surface* image;
     SDL_Surface* image1;
     for (int i = 0; i < cell->length / cell->sizeX; i++)
@@ -73,7 +74,8 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                 SDL_Texture* myImage12 = SDL_CreateTextureFromSurface(rend, image1);
                 SDL_FreeSurface(image1);
                 SDL_Rect myImgPos12 = { i * 30, j * 30, 30, 30 };
-                SDL_RenderCopy(rend, myImage12, NULL, &myImgPos12);
+                SDL_Point center = { 15, 15 };
+                SDL_RenderCopyEx(rend, myImage12, NULL, &myImgPos12, rand() %4 *90, &center, SDL_FLIP_NONE);
 
                 switch (((Case*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].content)
                 {
