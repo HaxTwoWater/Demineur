@@ -13,11 +13,12 @@ const int POSITION_Y = 300;
 
 void InitDemineurWindow() {
     Cell c[25];
-    for (int i = 0; i < 25; i++) 
-    {
-        c[i].num = rand() % 9;
-    }
     DynamicArray* cell = InitDynamicArray(5, 5, 0, c, sizeof(Cell));
+    for (int i = 0; i < 25; i++)
+    {
+        ((Cell*)cell->elm)[i].num = rand() % 9;
+        ((Cell*)cell->elm)[i].reveal = rand() % 2;
+    }
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
     SDL_Window* window;
 
@@ -98,37 +99,55 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
         for (int j = 0; j < cell->sizeY; j++)
         {
             SDL_Surface* image;
-            printf("%d\n", *((Cell*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize));
-            switch (*((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))
+            /*
+            printf("%d\n", ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX) * cell->elmSize]);
+            printf("%d\n", ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX) * cell->elmSize].num);
+            printf("%d\n", ((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize)));
+            printf("%d\n", ((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize));
+            printf("%d\n", ((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num);
+            printf("%d\n", ((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal);
+            printf("%d\n", *((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize));
+            printf("\n");
+            */
+            if (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal) 
             {
-            case 1:
-                image = IMG_Load("src/1.png");
-                break;
-            case 2:
-                image = IMG_Load("src/2.png");
-                break;
-            case 3:
-                image = IMG_Load("src/3.png");
-                break;
-            case 4:
-                image = IMG_Load("src/4.png");
-                break;
-            case 5:
-                image = IMG_Load("src/5.png");
-                break;
-            case 6:
-                image = IMG_Load("src/6.png");
-                break;
-            case 7:
-                image = IMG_Load("src/7.png");
-                break;
-            case 8:
-                image = IMG_Load("src/8.png");
-                break;
-            default:
                 image = IMG_Load("src/revealed.png");
-                break;
             }
+            else 
+            {
+                //(((Cell*)(GetAt(cell, convertCoordToLen(i, j, cell->sizeX))))->num)
+                switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num)
+                {
+                case 1:
+                    image = IMG_Load("src/1.png");
+                    break;
+                case 2:
+                    image = IMG_Load("src/2.png");
+                    break;
+                case 3:
+                    image = IMG_Load("src/3.png");
+                    break;
+                case 4:
+                    image = IMG_Load("src/4.png");
+                    break;
+                case 5:
+                    image = IMG_Load("src/5.png");
+                    break;
+                case 6:
+                    image = IMG_Load("src/6.png");
+                    break;
+                case 7:
+                    image = IMG_Load("src/7.png");
+                    break;
+                case 8:
+                    image = IMG_Load("src/8.png");
+                    break;
+                default:
+                    image = IMG_Load("src/empty.png");
+                    break;
+                }
+            }
+            
             SDL_Texture* monImage = SDL_CreateTextureFromSurface(rend, image);
             SDL_FreeSurface(image);
             SDL_Rect imgPos = { i * 30, j * 30, 30, 30 };

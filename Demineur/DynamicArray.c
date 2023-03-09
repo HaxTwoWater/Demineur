@@ -23,7 +23,7 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, void* type, int e
     char* val = type;
     for (int i = 0; i < l; i++)
     {
-        *((char*)dynamic->elm + i * dynamic->elmSize) = *(val + i * dynamic->elmSize);
+        //*((char*)dynamic->elm + i * dynamic->elmSize) = *(val + i * dynamic->elmSize);
     }
 
     dynamic->sizeX = sizeX;
@@ -71,6 +71,11 @@ DynamicArray* AddTo(DynamicArray* dynamic, void* element)
 
     Free(dynamic);
     return newDynamic;
+}
+
+void* GetAt(DynamicArray* dynamic, int i)
+{
+    return (char*)dynamic->elm + i * dynamic->elmSize;
 }
 
 void Free(DynamicArray* dynamic)

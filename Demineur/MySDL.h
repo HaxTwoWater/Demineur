@@ -4,6 +4,7 @@
 typedef struct Cell
 {
 	int num;
+	int reveal;
 } Cell;
 
 void InitDemineurWindow();
