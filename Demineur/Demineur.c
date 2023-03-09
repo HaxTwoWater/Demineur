@@ -224,8 +224,7 @@ void Generate(DynamicArray* newDynamic, int playPos)
     int sizeY = newDynamic->sizeY;
     int numBombs = newDynamic->bombs;
 
-    Case oBombCase;
-    DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1, 0, &oBombCase, sizeof(Case));
+    DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1, 0, sizeof(Case));
     for (int a = 0; a < bomb->sizeX; a++)
     {
         for (int b = 0; b < bomb->sizeY; b++)

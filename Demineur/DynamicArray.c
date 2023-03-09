@@ -36,7 +36,7 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, int elmSize)
 //Marche seulement en 1 dimension
 DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
 {
-    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed, dynamic->elm[0], dynamic->elmSize);
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed, dynamic->elmSize);
     int offset = 0;
     for (int i = 0; i < newDynamic->length; i++)
     {
@@ -50,7 +50,7 @@ DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
 //Marche seulement en 1 dimension
 DynamicArray* AddTo(DynamicArray* dynamic, void* element)
 {
-    DynamicArray* newDynamic = InitDynamicArray(dynamic->length + 1, 1, dynamic->seed, dynamic->elm[0], dynamic->elmSize);
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->length + 1, 1, dynamic->seed, dynamic->elmSize);
     for (int i = 0; i < newDynamic->length - 1; i++)
     {
         newDynamic->elm[i] = dynamic->elm[i];

@@ -12,7 +12,6 @@ typedef struct DynamicArray
     int bombs;
     int generated;
 
-    int capacity;
     int elmSize;
     void** elm;
 } DynamicArray;
