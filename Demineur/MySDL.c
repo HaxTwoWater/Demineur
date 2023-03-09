@@ -33,7 +33,7 @@ void DestroyDemineurWindow(SDL_Renderer* renderer, SDL_Window* window) {
 
 void Drawn(DynamicArray* cell, SDL_Renderer* rend)
 {
-    srand(0);
+    srand(cell->seed);
     SDL_Surface* image;
     SDL_Surface* image1;
     for (int i = 0; i < cell->length / cell->sizeX; i++)
