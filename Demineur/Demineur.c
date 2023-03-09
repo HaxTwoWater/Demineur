@@ -48,7 +48,7 @@ void app()
     SDL_Renderer* renderer = NULL;
     SDL_Window* window = NULL;
     SDL_Event e;
-    DynamicArray* dynamic = Create(renderer, window);
+    DynamicArray* dynamic = Create(&renderer, &window);
 
     
     int finish = 1;
@@ -131,7 +131,7 @@ void app()
     }
 }
 
-DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window)
+DynamicArray* Create(SDL_Renderer** renderer, SDL_Window** window)
 {
     int sizeX = -1;
     int sizeY = -1;
@@ -209,7 +209,7 @@ DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window)
         }
     }
 
-    InitDemineurWindow(&renderer, &window, sizeX, sizeY);
+    InitDemineurWindow(renderer, window, sizeX, sizeY);
 
     return newDynamic;
 }
@@ -340,7 +340,9 @@ DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic, SDL_Ren
         // Le joueur souhaite rejouer (121 = 'y')
         Free(dynamic);
         DestroyDemineurWindow(renderer, window);
-        return Create(renderer, window);
+        renderer = NULL;
+        window = NULL;
+        return Create(&renderer, &window);
         break;
     }
 }
