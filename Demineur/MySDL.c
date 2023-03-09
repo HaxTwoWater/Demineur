@@ -38,13 +38,10 @@ void InitDemineurWindow() {
         SDL_SetRenderDrawColor(renderer, 211, 211, 211, 127);
         SDL_RenderClear(renderer);
 
+        Drawn(cell, renderer);
         while (SDL_PollEvent(&e) && play) {
-
-            Drawn(cell, renderer);
             switch (e.type) {
             case SDL_MOUSEBUTTONDOWN:
-                if (e.motion.state == SDL_RELEASED) 
-                {
                     int i = e.motion.x / 30;
                     int j = e.motion.y / 30;
                     if (e.button.button == SDL_BUTTON_LEFT)
@@ -55,7 +52,6 @@ void InitDemineurWindow() {
                     {
                         ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].flag = 1;
                     }
-                }
                 break;
             case SDL_QUIT:
                 play = 0;
@@ -124,7 +120,7 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
 
                 break;
             default:
-                image1 = IMG_Load("src/empty.png");
+                image1 = IMG_Load("src/revealed.png");
                 SDL_Texture* myImage12 = SDL_CreateTextureFromSurface(rend, image1);
                 SDL_FreeSurface(image1);
                 SDL_Rect myImgPos12 = { i * 30, j * 30, 30, 30 };
