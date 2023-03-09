@@ -15,7 +15,7 @@ void InitDemineurWindow() {
     DynamicArray* cell = InitDynamicArray(5, 5, 0, c, sizeof(Cell));
     for (int i = 0; i < 25; i++)
     {
-        ((Cell*)cell->elm)[i].num = rand() % 9;
+        ((Cell*)cell->elm)[i].num = rand() % 10 -1;
         ((Cell*)cell->elm)[i].reveal = rand() % 2;
     }
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
@@ -120,6 +120,9 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
 
             switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num)
             {
+            case -1:
+                image = IMG_Load("src/bombe(1).png");
+                break;
             case 1:
                 image = IMG_Load("src/1.png");
                 break;
