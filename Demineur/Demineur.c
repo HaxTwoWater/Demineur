@@ -160,7 +160,6 @@ DynamicArray* Create(SDL_Renderer** renderer, SDL_Window** window)
     switch (seed)
     {
     case 0:
-        printf("random seed");
         seed = time(NULL);
         break;
     default:
