@@ -26,36 +26,10 @@ void InitDemineurWindow() {
     int WIDTH = 30 * 5;
     int HEIGHT = 30 * 5 +0;
 
-    window = SDL_CreateWindow("Démineur", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
-
-    SDL_Rect carreFlag, rectFlag;
-    int x = 100;
-    int y = 100;
-    carreFlag.x = x;
-    carreFlag.y = y;
-    carreFlag.w = 6;
-    carreFlag.h = 6;
-    rectFlag.x = x;
-    rectFlag.y = y;
-    rectFlag.w = 3;
-    rectFlag.h = 15;
-    SDL_Rect caseSurr, caseFill;
-    int spawnCaseX = 10;
-    int spawnCaseY = 10;
-    int spawnCaseS = 10;
-    caseSurr.x = spawnCaseX;
-    caseSurr.x = spawnCaseY;
-    caseSurr.w = spawnCaseS;
-    caseSurr.h = spawnCaseS;
-    caseFill.x = spawnCaseX + 1;
-    caseFill.x = spawnCaseY + 1;
-    caseFill.w = spawnCaseS - 2;
-    caseFill.h = spawnCaseS - 2;
-
-    const char* image_path = "src/1.png";
+    window = SDL_CreateWindow("Demineur", POSITION_X, POSITION_Y, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
     if (window == NULL) { printf("%s\n", SDL_GetError()); exit(-1); }
-    //dessiner un composant 
+    
     SDL_Event e;
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
@@ -70,15 +44,15 @@ void InitDemineurWindow() {
             Drawn(cell, renderer);
             switch (e.type) {
             case SDL_MOUSEBUTTONDOWN:
-                if (e.mouse.state == SDL_RELEASED) 
+                if (e.motion.state == SDL_RELEASED) 
                 {
-                    int i = e.mouse.x / 30;
-                    int j = e.mouse.y / 30;
-                    if (e.mouse.button == SDL_BUTTON_LEFT)
+                    int i = e.motion.x / 30;
+                    int j = e.motion.y / 30;
+                    if (e.button.button == SDL_BUTTON_LEFT)
                     {
                         ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal = 1;
                     }
-                    else if (e.mouse.button == SDL_BUTTON_RIGHT && !((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal)
+                    else if (e.button.button == SDL_BUTTON_RIGHT && !((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].reveal)
                     {
                         ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX)].flag = 1;
                     }
@@ -104,59 +78,16 @@ void InitDemineurWindow() {
 
 void Drawn(DynamicArray* cell, SDL_Renderer* rend)
 {
+    SDL_Surface* image;
+    SDL_Texture* texture;
     for(int i = 0; i < cell->length / cell->sizeX; i++)
     {
         for (int j = 0; j < cell->sizeY; j++)
         {
-            SDL_Surface* image;
-            SDL_Surface* image1;
-            /*
-            printf("%d\n", ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX) * cell->elmSize]);
-            printf("%d\n", ((Cell*)cell->elm)[convertCoordToLen(i, j, cell->sizeX) * cell->elmSize].num);
-            printf("%d\n", ((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize)));
-            printf("%d\n", ((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize));
-            printf("%d\n", ((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num);
-            printf("%d\n", ((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal);
-            printf("%d\n", *((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize));
-            printf("\n");
-            */
-
-
-            switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal)
+                
+            if(((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->flag) image = IMG_Load("src/flag.png");
+            else
             {
-            case 0:
-                image1 = IMG_Load("src/empty.png");
-                SDL_Texture* myImage1 = SDL_CreateTextureFromSurface(rend, image1);
-                SDL_FreeSurface(image1);
-                SDL_Rect myImgPos1 = { i * 30, j * 30, 30, 30 };
-                SDL_RenderCopy(rend, myImage1, NULL, &myImgPos1);
-
-                switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->flag)
-                {
-                case 1:
-                    image = IMG_Load("src/flag.png");
-                    break;
-                default:
-                    image = NULL;
-                    break;
-                }
-
-                if (image != NULL)
-                {
-                    SDL_Texture* monImage = SDL_CreateTextureFromSurface(rend, image);
-                    SDL_FreeSurface(image);
-                    SDL_Rect imgPos = { i * 30, j * 30, 30, 30 };
-                    SDL_RenderCopy(rend, monImage, NULL, &imgPos);
-                }
-
-                break;
-            default:
-                image1 = IMG_Load("src/empty.png");
-                SDL_Texture* myImage1 = SDL_CreateTextureFromSurface(rend, image1);
-                SDL_FreeSurface(image1);
-                SDL_Rect myImgPos1 = { i * 30, j * 30, 30, 30 };
-                SDL_RenderCopy(rend, myImage1, NULL, &myImgPos1);
-
                 switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num)
                 {
                 case -1:
@@ -187,22 +118,20 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                     image = IMG_Load("src/8.png");
                     break;
                 default:
-                    image = NULL;
+                    image = IMG_Load("src/empty.png");
                     break;
                 }
-
-                if (image != NULL)
-                {
-                    SDL_Texture* monImage = SDL_CreateTextureFromSurface(rend, image);
-                    SDL_FreeSurface(image);
-                    SDL_Rect imgPos = { i * 30, j * 30, 30, 30 };
-                    SDL_RenderCopy(rend, monImage, NULL, &imgPos);
-                }
-
-                break;
             }
+            SDL_Rect imgPos = { i * 30, j * 30, 30, 30 };
 
-            //(((Cell*)(GetAt(cell, convertCoordToLen(i, j, cell->sizeX))))->num)
+            image = IMG_Load("src/reveal.png");
+            texture = SDL_CreateTextureFromSurface(rend, image);
+            SDL_FreeSurface(image);
+            SDL_RenderCopy(rend, texture, NULL, &imgPos);
+
+            texture = SDL_CreateTextureFromSurface(rend, image);
+            SDL_FreeSurface(image);
+            SDL_RenderCopy(rend, texture, NULL, &imgPos);
         }
     }
     SDL_RenderPresent(rend);
