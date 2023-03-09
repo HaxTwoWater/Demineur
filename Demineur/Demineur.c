@@ -9,15 +9,9 @@
 #include "MySDL.h"
 #include <SDL.h>
 #include <SDL_image.h>
+#include "Demineur.h"
 
-typedef struct Case
-{
-    int content;
-    int reveal;
-    int flaged;
-    int X;
-    int Y;
-}Case;
+
 
 void Clear() {
     for (int n = 0; n < 10; n++)
@@ -252,7 +246,12 @@ DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window)
     }
     srand(seed);
 
-    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY, seed, sizeof(Case));
+    Case oEmptyCase;
+    oEmptyCase.content = 0;
+    oEmptyCase.reveal = 0;
+    oEmptyCase.flaged = 0;
+
+    DynamicArray* newDynamic = InitDynamicArray(sizeX, sizeY, seed, &oEmptyCase, sizeof(Case));
 
     int numBombs = newDynamic->sizeX * newDynamic->sizeY;
     switch (difficulty)
@@ -278,19 +277,12 @@ DynamicArray* Create(SDL_Renderer* renderer, SDL_Window* window)
     }
     newDynamic->bombs = numBombs;
 
-    Case oEmptyCase;
-    oEmptyCase.content = 0;
-    oEmptyCase.reveal = 0;
-    oEmptyCase.flaged = 0;
-
     for (int a = 0; a < newDynamic->sizeX; a++)
     {
         for (int b = 0; b < newDynamic->sizeY; b++)
         {
-            Case* c = &((Case*)newDynamic->elm)[convertCoordToLen(a, b, newDynamic->sizeX)];
-            c->content = oEmptyCase.content;
-            c->reveal = oEmptyCase.reveal;
-            c->flaged = oEmptyCase.flaged;
+            ((Case*)newDynamic->elm)[convertCoordToLen(a, b, newDynamic->sizeX)].X = a;
+            ((Case*)newDynamic->elm)[convertCoordToLen(a, b, newDynamic->sizeX)].Y = b;
         }
     }
 
@@ -308,7 +300,18 @@ void Generate(DynamicArray* newDynamic, int playPos)
     int sizeX = newDynamic->sizeX;
     int sizeY = newDynamic->sizeY;
     int numBombs = newDynamic->bombs;
-    DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1, 0, sizeof(Case));
+
+    Case oBombCase;
+    DynamicArray* bomb = InitDynamicArray(sizeX * sizeY, 1, 0, &oBombCase, sizeof(Case));
+    for (int a = 0; a < bomb->sizeX; a++)
+    {
+        for (int b = 0; b < bomb->sizeY; b++)
+        {
+            ((Case*)bomb->elm)[convertCoordToLen(a, b, bomb->sizeX)].X = a;
+            ((Case*)bomb->elm)[convertCoordToLen(a, b, bomb->sizeX)].Y = b;
+        }
+    }
+
     int Pos[2] = { 0, 0 };
     convertLenToCoord(playPos, sizeX, Pos);
     int sX = max(-1, Pos[0] - 2);

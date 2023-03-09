@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "DynamicArray.h"
+#include "MySDL.h"
 
 void convertLenToCoord(int len, int sizeX, int coord[2])
 {
@@ -13,19 +14,17 @@ int convertCoordToLen(int x, int y, int sizeX)
     return (y * sizeX + x);
 }
 
-DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, void* type, int elmSize)
+DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, void* base, int elmSize)
 {
     int l = sizeX * sizeY;
     DynamicArray* dynamic = (DynamicArray*)malloc(sizeof(DynamicArray));
 
     dynamic->elmSize = elmSize;
-    dynamic->elm = malloc(elmSize * l);
-    char* val = type;
+    dynamic->elm = malloc(l * elmSize);
     for (int i = 0; i < l; i++)
     {
-        //*((char*)dynamic->elm + i * dynamic->elmSize) = *(val + i * dynamic->elmSize);
+        dynamic->elm[i] = base;
     }
-
     dynamic->sizeX = sizeX;
     dynamic->sizeY = sizeY;
     dynamic->selectX = sizeX / 2;
@@ -34,61 +33,39 @@ DynamicArray* InitDynamicArray(int sizeX, int sizeY, int seed, void* type, int e
     dynamic->seed = seed;
     dynamic->bombs = 0;
     dynamic->generated = 0;
-    /*
-    for (int i = 0; i < dynamic->sizeX; i++)
-    {
-        for (int j = 0; j < dynamic->sizeY; j++)
-        {
-            int index = convertCoordToLen(i, j, sizeX);
-            dynamic->elm[index].val = (Case*)malloc(sizeof(Case));
-            dynamic->elm[index].X = i;
-            dynamic->elm[index].Y = j;
-        }
-    }
-    */
     return dynamic;
 }
 
 //Marche seulement en 1 dimension
 DynamicArray* DeleteAt(DynamicArray *dynamic, int index)
 {
-    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed, dynamic->elm, dynamic->elmSize);
-    char* newElm = newDynamic->elm;
-    char* oldElm = dynamic->elm;
-    for (int i = index; i < newDynamic->length; i++)
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->length - 1, 1, dynamic->seed, dynamic->elm[0], dynamic->elmSize);
+    int offset = 0;
+    for (int i = 0; i < newDynamic->length; i++)
     {
-        *(newElm + i * newDynamic->elmSize) = *(oldElm + (i + 1) * dynamic->elmSize);
+        if (i == index) offset = 1;
+        newDynamic->elm[i] = dynamic->elm[i + offset];
     }
     Free(dynamic);
     return newDynamic;
 }
 
 //Marche seulement en 1 dimension
-DynamicArray* AddTo(DynamicArray* dynamic, void* element) 
+DynamicArray* AddTo(DynamicArray* dynamic, void* element)
 {
-    DynamicArray* newDynamic = InitDynamicArray(dynamic->length + 1, 1, dynamic->seed, dynamic->elm, dynamic->elmSize);
-    *((char*)newDynamic->elm + (newDynamic->length - 1) * newDynamic->elmSize) = *((char*)element);
+    DynamicArray* newDynamic = InitDynamicArray(dynamic->length + 1, 1, dynamic->seed, dynamic->elm[0], dynamic->elmSize);
+    for (int i = 0; i < newDynamic->length - 1; i++)
+    {
+        newDynamic->elm[i] = dynamic->elm[i];
+    }
+    newDynamic->elm[newDynamic->length - 1] = element;
 
     Free(dynamic);
     return newDynamic;
 }
 
-void* GetAt(DynamicArray* dynamic, int i)
-{
-    return (char*)dynamic->elm + i * dynamic->elmSize;
-}
-
 void Free(DynamicArray* dynamic)
 {
-    /*
-    for (int i = 0; i < dynamic->length; i++)
-    {
-        if (dynamic->elm[i].val != NULL)
-        {
-            free(dynamic->elm[i].val);
-        }        
-    }
-    */
     free(dynamic->elm);
     free(dynamic);
 }

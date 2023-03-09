@@ -145,6 +145,7 @@
     <ClCompile Include="MySDL.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Demineur.h" />
     <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="ia.h" />
     <ClInclude Include="MySDL.h" />

@@ -5,20 +5,14 @@
 #include <stdio.h>
 #include <time.h>
 #include "DynamicArray.h"
+#include "Demineur.h"
 
 const int POSITION_X = 800;
 const int POSITION_Y = 300;
 
 void InitDemineurWindow(SDL_Renderer* renderer, SDL_Window* window, int sizeX, int sizeY) {
     srand(time(NULL));
-    Cell c[25];
-    DynamicArray* cell = InitDynamicArray(5, 5, 0, c, sizeof(Cell));
-    for (int i = 0; i < 25; i++)
-    {
-        ((Cell*)cell->elm)[i].num = rand() % 10 - 1;
-        ((Cell*)cell->elm)[i].reveal = 0;
-        ((Cell*)cell->elm)[i].flag = 0;
-    }
+
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { printf("%s\n", SDL_GetError()); exit(-1); }
 
     int WIDTH = 30 * sizeX;
@@ -46,7 +40,8 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
     {
         for (int j = 0; j < cell->sizeY; j++)
         {
-            switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->reveal)
+            
+            switch (((Case*)cell->elm)->reveal)
             {
             case 0:
                 image1 = IMG_Load("src/empty.png");
@@ -55,7 +50,7 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                 SDL_Rect myImgPos11 = { i * 30, j * 30, 30, 30 };
                 SDL_RenderCopy(rend, myImage11, NULL, &myImgPos11);
 
-                switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->flag)
+                switch (((Case*)cell->elm)->flaged)
                 {
                 case 1:
                     image = IMG_Load("src/flag.png");
@@ -81,7 +76,7 @@ void Drawn(DynamicArray* cell, SDL_Renderer* rend)
                 SDL_Rect myImgPos12 = { i * 30, j * 30, 30, 30 };
                 SDL_RenderCopy(rend, myImage12, NULL, &myImgPos12);
 
-                switch (((Cell*)((char*)cell->elm + convertCoordToLen(i, j, cell->sizeX) * cell->elmSize))->num)
+                switch (((Case*)cell->elm)->content)
                 {
                 case -1:
                     image = IMG_Load("src/bombe(1).png");

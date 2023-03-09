@@ -1,14 +1,10 @@
 #ifndef MY_SDL
 #define MY_SDL
+#include <SDL.h>
+#include "DynamicArray.h"
 
-typedef struct Cell
-{
-	int num;
-	int reveal;
-	int flag;
-} Cell;
-
-void InitDemineurWindow();
-void Drawn();
+void InitDemineurWindow(SDL_Renderer* renderer, SDL_Window* window, int sizeX, int sizeY);
+void DestroyDemineurWindow(SDL_Renderer* renderer, SDL_Window* window);
+void Drawn(DynamicArray* cell, SDL_Renderer* rend);
 
 #endif // !MY_SDL
