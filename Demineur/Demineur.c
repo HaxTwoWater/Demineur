@@ -332,22 +332,17 @@ DynamicArray* endGame(int condition, int* finish, DynamicArray* dynamic, SDL_Ren
         while (getchar() != '\n');
     }
     Clear();
+    *finish = 0;
+    Free(dynamic);
+    DestroyDemineurWindow(renderer, window);
     switch (ask)
     {
     case 110:
         // Le joueur ne souhaite pas rejouer (110 = 'n')
-        *finish = 0;
-        Free(dynamic);
-        DestroyDemineurWindow(renderer, window);
-        return NULL;
         break;
     case 121:
         // Le joueur souhaite rejouer (121 = 'y')
-        Free(dynamic);
-        DestroyDemineurWindow(renderer, window);
-        renderer = NULL;
-        window = NULL;
-        return Create(&renderer, &window);
+        app();
         break;
     }
 }
